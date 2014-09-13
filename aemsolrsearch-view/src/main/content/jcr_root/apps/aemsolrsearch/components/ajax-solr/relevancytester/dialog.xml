@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Dialog"
+    title="Relevancy Tester"
+    xtype="dialog">
+    <items
+        jcr:primaryType="cq:Widget"
+        xtype="tabpanel">
+        <items jcr:primaryType="cq:WidgetCollection">
+            <general
+                    jcr:primaryType="cq:Panel"
+                    title="General">
+                <items jcr:primaryType="cq:WidgetCollection">
+                    <searcha
+                            jcr:primaryType="cq:Widget"
+                            fieldLabel="Search Page A"
+                            name="./search-page-a"
+                            xtype="pathfield"
+                            >
+                    </searcha>
+                    <searchb
+                            jcr:primaryType="cq:Widget"
+                            fieldLabel="Search Page B"
+                            name="./search-page-b"
+                            xtype="pathfield"
+                            >
+                    </searchb>
+                </items>
+            </general>
+        </items>
+
+    </items>
+</jcr:root>
+
+

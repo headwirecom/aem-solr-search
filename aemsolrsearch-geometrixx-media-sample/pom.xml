@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.headwire.solr</groupId>
+        <artifactId>aemsolrsearch</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aemsolrsearch-geometrixx-media-sample</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>AEM Solr Search Geometrixx Media Sample</name>
+
+    <description>
+        AEM Solr Search Geometrixx Media Sample
+    </description>
+
+    <properties>
+        <junit.version>4.11</junit.version>
+        <solr.version>4.9.0</solr.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.squeakysand.osgi</groupId>
+            <artifactId>squeakysand-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- CQ -->
+        <dependency>
+            <groupId>com.day.cq.wcm</groupId>
+            <artifactId>cq-wcm-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq.dam</groupId>
+            <artifactId>cq-dam-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq</groupId>
+            <artifactId>cq-tagging</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq</groupId>
+            <artifactId>cq-search</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.adobe.granite</groupId>
+            <artifactId>com.adobe.granite.replication.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- sling -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.resource</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.eventadmin</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.event</artifactId>
+            <version>3.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- JCR -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <!-- JCR API -->
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Media article dependencies -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.adobe.cq.media</groupId>
+            <artifactId>cq-media-articles</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.7.3</version>
+        </dependency>
+        <!-- AEM Solr Search dependencies -->
+        <dependency>
+            <groupId>com.headwire.solr</groupId>
+            <artifactId>aemsolrsearch-services</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.headwire.solr</groupId>
+            <artifactId>aemsolrsearch-solrj</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>com.headwire.aemsolrsearch.geometrixxmedia.osgi.Activator</Bundle-Activator>
+                        <Import-Package>*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									org.apache.felix
+        								</groupId>
+        								<artifactId>
+        									maven-scr-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.7.4,)
+        								</versionRange>
+        								<goals>
+        									<goal>scr</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore />
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>auto-deploy-sample</id>
+            <build>
+                <plugins>
+                    <!--
+                        Use the sling plugin to automatically deploy the bundle to the JCR tree
+                    -->
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <slingUrl>http://${cq.host}:${cq.port}</slingUrl>
+                                    <!-- 
+                                        IMPORTANT: due to an issue with the 2.1.0 version of the maven-sling-plugin, the path specified by the slingUrlSuffix
+                                        parameter below will not be created automatically and so must already exist in your CQ instance BEFORE trying to use the
+                                        auto-deploy profile. See this link for further information:
+                                        http://mail-archives.apache.org/mod_mbox/sling-users/201204.mbox/%3CBD6ED82C-3223-41C2-BF15-C987D7AAFCE3@craigsdickson.com%3E
+                                    -->
+                                    <slingUrlSuffix>/apps/aemsolrsearch/install</slingUrlSuffix>
+                                    <user>${cq.user}</user>
+                                    <password>${cq.password}</password>
+                                    <usePut>true</usePut>
+                                    <failOnError>true</failOnError>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

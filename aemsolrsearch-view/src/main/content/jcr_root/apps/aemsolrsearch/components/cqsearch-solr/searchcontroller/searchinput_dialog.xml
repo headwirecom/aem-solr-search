@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+    <enable
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Enable Search Input"
+            name="./input-enable"
+            defaultValue="{Boolean}true"
+            type="checkbox"
+            xtype="selection"
+            />
+    <!--
+    <input-id
+        jcr:primaryType="cq:Widget"
+        fieldLabel="HTML ID"
+        name="./input-id"
+        defaultValue="text"
+        xtype="textfield"
+        />
+
+    <input-target
+	    jcr:primaryType="cq:Widget"
+	    fieldLabel="HTML Target"
+	    name="./input-target"
+	    defaultValue="#search"
+	    xtype="textfield"
+	    />
+	-->  
+</jcr:root>

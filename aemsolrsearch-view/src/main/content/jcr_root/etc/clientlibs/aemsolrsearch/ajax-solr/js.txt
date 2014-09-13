@@ -1,0 +1,13 @@
+#base=js
+core/Core.js
+core/AbstractManager.js
+managers/Manager.jquery.js
+core/Parameter.js
+core/ParameterStore.js
+core/AbstractWidget.js
+widgets/jquery/StatisticsWidget.js
+widgets/jquery/PagerWidget.js
+widgets/jquery/BootstrapPagerWidget.js
+core/AbstractFacetWidget.js
+widgets/TagcloudWidget.js
+core/AbstractTextWidget.js

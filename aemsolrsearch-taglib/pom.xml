@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.headwire.solr</groupId>
+        <artifactId>aemsolrsearch</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aemsolrsearch-taglib</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>AEM Solr Search Tag Library</name>
+
+    <description>
+        A JSP custom Tag Library for use within JSPs in the 'AEM Solr Search' project.
+    </description>
+
+    <url>http://aemsolrsearch.headwire.com/taglibs/${project.artifactId}</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aemsolrsearch-services</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cqblueprints.taglib</groupId>
+            <artifactId>cqblueprints-taglib</artifactId>
+            <version>5.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.day.cq.wcm</groupId>
+            <artifactId>cq-wcm-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squeakysand.jcr</groupId>
+            <artifactId>squeakysand-jcr-taglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squeakysand.jsp</groupId>
+            <artifactId>squeakysand-jsp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squeakysand.osgi</groupId>
+            <artifactId>squeakysand-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squeakysand.sling</groupId>
+            <artifactId>squeakysand-sling-taglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.headwire.solr</groupId>
+            <artifactId>aemsolrsearch-search-service</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.headwire.solr</groupId>
+            <artifactId>aemsolrsearch-solrj</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>        
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.squeakysand.jsp</groupId>
+                <artifactId>jsptld-maven-plugin</artifactId>
+                <configuration>
+                    <shortName>aemsolrsearch</shortName>
+                    <processTagFiles>true</processTagFiles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>com.headwire.aemsolrsearch.taglib.osgi.Activator</Bundle-Activator>
+                        <Import-Package>*</Import-Package>
+
+                        <Include-Resource>
+                            META-INF/${project.artifactId}-${project.version}.tld=${project.build.outputDirectory}/META-INF/${project.artifactId}-${project.version}.tld,
+                            {maven-resources}
+                        </Include-Resource>
+                        <Sling-Bundle-Resources>
+                            /META-INF/tags
+                        </Sling-Bundle-Resources>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <!--
+                site plugin for generating tag library docs
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>net.sourceforge.maven-taglib</groupId>
+                            <artifactId>maven-taglib-plugin</artifactId>
+                            <configuration>
+                                <srcDir>${project.build.outputDirectory}/META-INF</srcDir>
+                            </configuration>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>tagreference</report>
+                                        <report>taglibdoc</report>
+                                        <report>validate</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									com.squeakysand.jsp
+        								</groupId>
+        								<artifactId>
+        									jsptld-maven-plugin
+        								</artifactId>
+        								<versionRange>
+        									[0.4.0,)
+        								</versionRange>
+        								<goals>
+        									<goal>generate</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore />
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>auto-deploy</id>
+            <build>
+                <plugins>
+                    <!--
+                        Use the sling plugin to automatically deploy the bundle to the JCR tree
+                    -->
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <slingUrl>http://${cq.host}:${cq.port}</slingUrl>
+                                    <!-- 
+                                        IMPORTANT: due to an issue with the 2.1.0 version of the maven-sling-plugin, the path specified by the slingUrlSuffix
+                                        parameter below will not be created automatically and so must already exist in your CQ instance BEFORE trying to use the
+                                        auto-deploy profile. See this link for further information:
+                                        http://mail-archives.apache.org/mod_mbox/sling-users/201204.mbox/%3CBD6ED82C-3223-41C2-BF15-C987D7AAFCE3@craigsdickson.com%3E
+                                    -->
+                                    <slingUrlSuffix>/apps/aemsolrsearch/install</slingUrlSuffix>
+                                    <user>${cq.user}</user>
+                                    <password>${cq.password}</password>
+                                    <usePut>true</usePut>
+                                    <failOnError>true</failOnError>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

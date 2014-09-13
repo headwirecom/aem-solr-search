@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Enable Hit Highlighting"
+        name="./highlighting-enable"
+        defaultValue="{Boolean}true"
+        type="checkbox"
+        xtype="selection"
+        />
+    <highlight-pre
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Simple Fomatter - Pre"
+        name="./highlighting-pre"
+        defaultValue="&lt;strong&gt;"
+        xtype="textfield"
+        />
+    <highlight-post
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Simple Fomatter - Post"
+            name="./highlighting-post"
+            defaultValue="&lt;/strong&gt;"
+            xtype="textfield"
+            />
+    <highlighting-snippets
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Number of Snippets"
+            name="./highlighting-snippets"
+            defaultValue="3"
+            xtype="textfield"
+            />
+    <highlighting-fragsize
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Fragement Size"
+            name="./highlighting-fragsize"
+            defaultValue="100"
+            xtype="textfield"
+            />
+    <highlight-fields
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Available Fields"
+            name="./highlighting-fields"
+            xtype="multifield"
+            >
+        <fieldConfig
+                jcr:primaryType="nt:unstructured"
+                optionsProvider="CQSearch.controller.provideStoredFieldsOptions"
+                type="select"
+                xtype="selection"/>
+    </highlight-fields>
+</jcr:root>

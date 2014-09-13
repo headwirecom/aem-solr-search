@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <aem-solr-search/>
+    <jcr:content
+        cq:allowedTemplates="[/apps/aemsolrsearch/templates/.*]"
+        cq:designPath="/etc/designs/aemsolrsearch"
+        cq:lastModified="{Date}2011-11-01T10:11:24.002+01:00"
+        cq:lastModifiedBy="admin"
+        jcr:mixinTypes="[sling:VanityPath]"
+        jcr:primaryType="nt:unstructured"
+        jcr:title="AEM Solr Search - Geometrixx Media Sample"
+        sling:redirect="{Boolean}true"
+        sling:redirectStatus="{Long}302"
+        sling:resourceType="foundation/components/redirect"
+        sling:vanityOrder="{Long}500"
+        redirectTarget="/content/aemsolrsearch/aem-solr-search"/>
+</jcr:root>

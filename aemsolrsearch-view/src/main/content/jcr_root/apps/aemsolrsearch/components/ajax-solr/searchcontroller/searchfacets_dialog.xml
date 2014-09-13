@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Enable Search Facets"
+            name="./facets-enable"
+            defaultValue="{Boolean}true"
+            type="checkbox"
+            xtype="selection"
+            />
+    <solr-facet-sort
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Facet Sort Order"
+            fieldDescription="Select 'Count' to sort by document hits, and select 'Index' to sort by facet value."
+            name="./solr-facet-sort"
+            optionsProvider="CQSearch.controller.provideFacetSortOptions"
+            defaultValue="count"
+            type="select"
+            xtype="selection"/>
+    <available-facets
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Available Facet Fields"
+            name="./solr-facet-fields"
+            xtype="multifield">
+        <fieldConfig
+                jcr:primaryType="nt:unstructured"
+                selectionLabel="Solr Field"
+                textfieldLabel="Facet Name"
+                optionsProvider="CQSearch.controller.provideFacetOptions"
+                xtype="cqsearchmultifield"/>
+    </available-facets>
+    <show-more-label
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Show More Label"
+            name="./solr-facet-show-more"
+            defaultValue="+ Show More"
+            xtype="textfield"
+            />
+    <show-less-label
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Show Less Label"
+            name="./solr-facet-show-less"
+            defaultValue="- Show Less"
+            xtype="textfield"
+            />
+    <show-num-facets
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Number of Facets to Show"
+            name="./solr-facet-show-num-facets"
+            defaultValue="10"
+            xtype="textfield"
+            />
+</jcr:root>

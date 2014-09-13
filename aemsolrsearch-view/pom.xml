@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.headwire.solr</groupId>
+        <artifactId>aemsolrsearch</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aemsolrsearch-view</artifactId>
+    <packaging>content-package</packaging>
+
+    <name>AEM Solr Search View Package</name>
+
+    <description>
+        All of the CQ component and template definitions for the 'AEM Solr Search' project.
+    </description>
+    
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-content-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/vault-work</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/content</directory>
+                                    <filtering>true</filtering>
+                                    <excludes>
+                                        <exclude>**/.svn</exclude>
+                                        <exclude>**/.vlt</exclude>
+                                        <exclude>**/.vltignore</exclude>
+                                        <exclude>**/.DS_Store</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.day.jcr.vault</groupId>
+                <artifactId>maven-vault-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>auto-deploy</id>
+            <!--
+                when activated, this profile will deploy and install the built CQ package to the target server.
+            -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.day.jcr.vault</groupId>
+                        <artifactId>maven-vault-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-package</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <packageFile>${project.build.directory}/${project.build.finalName}.zip</packageFile>
+                                    <targetURL>http://${cq.host}:${cq.port}/crx/packmgr/service.jsp</targetURL>
+                                    <userId>${cq.user}</userId>
+                                    <password>${cq.password}</password>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

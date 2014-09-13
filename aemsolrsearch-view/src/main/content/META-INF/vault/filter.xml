@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<workspaceFilter version="1.0">
+    <filter root="/apps/aemsolrsearch">
+        <exclude pattern="/apps/aemsolrsearch/install.*"/>
+        <exclude pattern="/apps/aemsolrsearch/runmodes.*"/>
+    </filter>
+    <filter root="/etc/clientlibs/aemsolrsearch"/>
+	<filter root="/etc/designs/aemsolrsearch">
+        <exclude pattern="/etc/designs/aemsolrsearch/jcr:content.*"/>
+    </filter>
+</workspaceFilter>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>aemsolrsearch-quickstart</artifactId>
+    <groupId>com.headwire.solr</groupId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>AEM Solr Search Quickstart</name>
+
+    <description>
+        This module provides a quickstart distribution of Apache Solr suitable for demonstration purposes
+        and local development.
+    </description>
+
+    <url>http://www.cqblueprints.com/index.html</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <jetty.port>8080</jetty.port>
+        <solr.version>4.9.0</solr.version>
+        <solr.home>${project.build.directory}/aem-solr-home</solr.home>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr</artifactId>
+            <version>${solr.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.2.2.v20140723</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                        <version>1.0.13</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                        <version>1.7.5</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>solr.solr.home</name>
+                            <value>${solr.home}</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <httpConnector>
+                        <port>${jetty.port}</port>
+                    </httpConnector>
+                    <webApp>
+                        <contextPath>/solr</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

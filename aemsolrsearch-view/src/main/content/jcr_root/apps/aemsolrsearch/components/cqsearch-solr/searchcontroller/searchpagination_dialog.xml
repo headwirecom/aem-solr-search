@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Enable Pagination"
+        name="./pagination-enable"
+        defaultValue="{Boolean}true"
+        type="checkbox"
+        xtype="selection"
+        />
+    <pagination-prev-label
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Previous Label"
+        name="./pagination-prev-label"
+        defaultValue="&amp;lt;"
+        xtype="textfield"
+        />
+    <pagination-next-label
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Next Label"
+        name="./pagination-next-label"
+        defaultValue="&amp;gt;"
+        xtype="textfield"
+        />
+    <!--
+    <pagination-id
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML ID"
+            name="./pagination-id"
+            defaultValue="pager"
+            xtype="textfield"
+            />
+    <pagination-target
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML Target"
+            name="./pagination-target"
+            defaultValue="#pager"
+            xtype="textfield"
+            />
+    -->
+</jcr:root>

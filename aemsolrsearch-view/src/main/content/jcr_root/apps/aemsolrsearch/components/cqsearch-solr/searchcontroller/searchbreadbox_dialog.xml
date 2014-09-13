@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Enable Search Breadbox"
+            name="./breadbox-enable"
+            defaultValue="{Boolean}true"
+            type="checkbox"
+            xtype="selection"
+            />
+    <!--
+    <breadbox-id
+        jcr:primaryType="cq:Widget"
+        fieldLabel="HTML ID"
+        name="./breadbox-id"
+        defaultValue="currentsearch"
+        xtype="textfield"
+        />
+
+    <breadbox-target
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML Target"
+            name="./breadbox-target"
+            defaultValue="#currentsearchselection"
+            xtype="textfield"
+            />
+    -->
+</jcr:root>

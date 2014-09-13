@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+        <filter-query-settings
+                jcr:primaryType="cq:Widget"
+                collapsed="{Boolean}false"
+                collapsible="{Boolean}true"
+                title="Filter Queries"
+                xtype="dialogfieldset">
+            <items jcr:primaryType="cq:WidgetCollection">
+                <filter-queries-in-breadbox
+                        jcr:primaryType="cq:Widget"
+                        fieldLabel="Allow in breadbox"
+                        fieldDescription="Click 'Allow in breadbox', if you would like filter queries to appear in the breadbox."
+                        name="./solr-filter-queries-in-breadbox-enabled"
+                        defaultValue="{Boolean}false"
+                        type="checkbox"
+                        xtype="selection"
+                        />
+                <filter-queries
+                        jcr:primaryType="cq:Widget"
+                        fieldLabel="Filter queries"
+                        fieldDescription="Filter queries allow you to restrict the scope of the result set. The format is field:value (e.g., doctype:pdf)."
+                        name="./solr-filter-queries"
+                        xtype="multifield"
+                        />
+                <search-handler
+                        jcr:primaryType="cq:Widget"
+                        fieldLabel="Search Handler"
+                        name="./search-handler"
+                        xtype="textfield"
+                        />
+            </items>
+        </filter-query-settings>
+
+</jcr:root>

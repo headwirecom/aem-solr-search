@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    This is the 'CQ Search' project global JSP.
+    
+    This JSP should be included at the top of all custom components in the 'CQ Search' project.
+    
+    Additional JSP elements that are global to components in the 'CQ Search' project should be added
+    to this JSP to ensure they are included in all custom components.
+
+-->
+
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+    
+    <jsp:directive.page trimDirectiveWhitespaces="true"/>
+    
+    <jsp:directive.include file="/libs/foundation/global.jsp"/>
+
+</jsp:root>

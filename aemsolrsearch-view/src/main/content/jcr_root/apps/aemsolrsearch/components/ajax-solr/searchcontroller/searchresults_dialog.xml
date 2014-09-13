@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Enable Search Results"
+        name="./results-enable"
+        defaultValue="{Boolean}true"
+        type="checkbox"
+        xtype="selection"
+        />
+    <results-per-page
+        jcr:primaryType="cq:Widget"
+        fieldLabel="Results Per Page"
+        name="./results-per-page"
+        defaultValue="10"
+        xtype="textfield"
+        />
+    <results-id
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML ID"
+            name="./results-id"
+            defaultValue="result"
+            xtype="textfield"
+            />
+
+    <results-target
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML Target"
+            name="./results-target"
+            defaultValue="#searchresults"
+            xtype="textfield"
+            />
+    <available-fields
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Available Result Fields"
+            name="./solr-result-fields"
+            type="checkbox"
+            optionsProvider="CQSearch.controller.provideStoredFieldsOptions"
+            xtype="selection"
+            />
+</jcr:root>
