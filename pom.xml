@@ -30,9 +30,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/GastonGonzalez/aem-solr-search.git</connection>
-        <developerConnection>scm:git:https://github.com/GastonGonzalez/aem-solr-search.git</developerConnection>
-        <url>http://www.cqblueprints.com/index.html</url>
+        <connection>scm:git:https://github.com/headwirecom/aem-solr-search.git</connection>
+        <developerConnection>scm:git:https://github.com/headwirecom/aem-solr-search.git</developerConnection>
+        <url>http://www.aemsolrsearch.com</url>
     </scm>
 
     <repositories>
