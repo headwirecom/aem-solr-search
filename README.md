@@ -53,4 +53,4 @@ TODO
 For More Information
 --------------------
 
-Send an email to <info@headwire.com>.
+Send an email to <aemsolr@headwire.com>.
