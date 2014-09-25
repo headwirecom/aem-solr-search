@@ -13,7 +13,7 @@ Requirements
 ------------
 
 * Java 7 or greater
-* Adobe AEM (CQ) 5.6 or greater (with the Geometrixx Media Site)
+* Adobe AEM (CQ) 5.6.1 (with the Geometrixx Media Site)
 * Maven 3
 
 Getting Started
