@@ -164,7 +164,6 @@
 body {
     padding: 0;
     margin: 0;
-    background: white url(images/bg.gif) repeat-y center 0;
 }
 
 html, div, span, h1, h2, h3, h4, h5, h6, p, a, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
