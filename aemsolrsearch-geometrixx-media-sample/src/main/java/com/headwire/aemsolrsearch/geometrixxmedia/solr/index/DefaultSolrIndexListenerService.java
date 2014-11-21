@@ -97,6 +97,12 @@ public class DefaultSolrIndexListenerService implements EventHandler {
                 LOG.info("Page modified {}", modificationPath);
                 addOrUpdatePage(modification);
 
+            } else if (type == PageModification.ModificationType.MOVED) {
+
+                LOG.info("Page moved from '{}' to '{}'", modificationPath, modification.getDestination());
+                addOrUpdatePage(modification);
+                indexService.deleteAndCommit(modificationPath);
+
             } else {
                 LOG.info("Unsupported page modification detected: '{}'", type);
             }
@@ -153,7 +159,10 @@ public class DefaultSolrIndexListenerService implements EventHandler {
 
     protected void addOrUpdatePage(PageModification modification) {
 
-        final String modificationPath = modification.getPath();
+        // We need to add the correct page for the add/update. On page moves, we need to use the destination.
+        final String modificationPath = (modification.getType() == PageModification.ModificationType.MOVED)
+            ? modification.getDestination()
+            : modification.getPath();
 
         if (null == resourceResolver) {
             LOG.warn("Can't perform indexing operation for '{}'", modificationPath);
