@@ -38,6 +38,16 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
     }
 
     /**
+     * Deletes the specified document and its children and then performs commit.
+     *
+     * @param docId Solr document ID
+     */
+    public void deleteTreeAndCommit(String docId) {
+        deleteTree(docId);
+        commit();
+    }
+
+    /**
      * Adds a document to the index. This method does not perform a commit. You may call commit()
      * yourself after add(), or you may use the addAndCommit() method.
      *
@@ -68,6 +78,27 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
             LOG.info("Deleting document from Solr index: {}", docId);
 
             getSolrServer(getCoreName()).deleteById(docId);
+
+        } catch (SolrServerException e) {
+            LOG.error("Error deleting document: {}", docId, e);
+        } catch (IOException e) {
+            LOG.error("Error deleting document: {}", docId, e);
+        }
+    }
+
+    /**
+     * Deletes the specified document and its children
+     *
+     * @param docId Solr document ID
+     */
+    public void deleteTree(String docId) {
+
+        try {
+            final String deleteQuery = new String().format("crx_path:\"%s\"", docId);
+            LOG.info("Deleting document ID '{}' and its children from Solr index using delete query: '{}'"
+                    , docId, deleteQuery);
+
+            getSolrServer(getCoreName()).deleteByQuery(deleteQuery);
 
         } catch (SolrServerException e) {
             LOG.error("Error deleting document: {}", docId, e);

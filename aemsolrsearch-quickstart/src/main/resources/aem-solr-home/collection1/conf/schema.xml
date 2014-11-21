@@ -24,18 +24,19 @@
    <field name="_version_" type="long" indexed="true" stored="true"/>
 
    <!-- Geometrixx Media fields-->
-   <field name="author"              type="text_general"  indexed="true"  stored="true"/>
-   <field name="body"                type="text_general"  indexed="true"  stored="true"/>
-   <field name="description"         type="text_general"  indexed="true"  stored="true"/>
-   <field name="keywords"            type="text_general"  indexed="true"  stored="true" multiValued="true"/>
-   <field name="last_modified"       type="date"          indexed="true"  stored="true"/>
-   <field name="teaser"              type="text_general"  indexed="true"  stored="true" multiValued="true"/>
-   <field name="id"                  type="string"        indexed="true"  stored="true" multiValued="false" required="true"/>
-   <field name="title"               type="text_general"  indexed="true"  stored="true"/>
-   <field name="url"                 type="text_general"  indexed="true"  stored="true"/>
-   <field name="publishDate"         type="tdate"         indexed="true"  stored="true"/>
-   <field name="sling_resource_type" type="string"        indexed="true"  stored="true"  multiValued="true"/>
-   <field name="tags"                type="text_general"  indexed="true"  stored="true"  multiValued="true"/>
+   <field name="author"              type="text_general"    indexed="true"  stored="true"/>
+   <field name="body"                type="text_general"    indexed="true"  stored="true"/>
+   <field name="crx_path"            type="descendent_path" indexed="true"  stored="true"/>
+   <field name="description"         type="text_general"    indexed="true"  stored="true"/>
+   <field name="keywords"            type="text_general"    indexed="true"  stored="true" multiValued="true"/>
+   <field name="last_modified"       type="date"            indexed="true"  stored="true"/>
+   <field name="teaser"              type="text_general"    indexed="true"  stored="true" multiValued="true"/>
+   <field name="id"                  type="string"          indexed="true"  stored="true" multiValued="false" required="true"/>
+   <field name="title"               type="text_general"    indexed="true"  stored="true"/>
+   <field name="url"                 type="text_general"    indexed="true"  stored="true"/>
+   <field name="publishDate"         type="tdate"           indexed="true"  stored="true"/>
+   <field name="sling_resource_type" type="string"          indexed="true"  stored="true"  multiValued="true"/>
+   <field name="tags"                type="text_general"    indexed="true"  stored="true"  multiValued="true"/>
 
     <!-- catchall field, containing all other searchable text fields (implemented
          via copyField further on in this schema  -->
@@ -91,6 +92,8 @@
    <dynamicField name="random_*" type="random" />
 
    <uniqueKey>id</uniqueKey>
+
+   <copyField source="id"          dest="crx_path"/>
 
    <copyField source="author"      dest="text"/>
    <copyField source="description" dest="text"/>

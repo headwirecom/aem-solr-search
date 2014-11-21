@@ -82,7 +82,7 @@ public class DefaultSolrIndexListenerService implements EventHandler {
             if (type == PageModification.ModificationType.DELETED) {
 
                 LOG.info("Page deleted {}", modificationPath);
-                indexService.deleteAndCommit(modification.getPath());
+                indexService.deleteTreeAndCommit(modification.getPath());
 
                 // Exit loop early on first page modification for deletes.
                 return;
@@ -101,7 +101,7 @@ public class DefaultSolrIndexListenerService implements EventHandler {
 
                 LOG.info("Page moved from '{}' to '{}'", modificationPath, modification.getDestination());
                 addOrUpdatePage(modification);
-                indexService.deleteAndCommit(modificationPath);
+                indexService.deleteTreeAndCommit(modificationPath);
 
             } else {
                 LOG.info("Unsupported page modification detected: '{}'", type);
