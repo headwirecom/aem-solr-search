@@ -4,7 +4,10 @@ core/AbstractManager.js
 managers/Manager.jquery.js
 core/Parameter.js
 core/ParameterStore.js
+core/ParameterHashStore.js
 core/AbstractWidget.js
+extra/jquery.history.js
+widgets/ParameterHistoryStore.js
 widgets/jquery/StatisticsWidget.js
 widgets/jquery/PagerWidget.js
 widgets/jquery/BootstrapPagerWidget.js

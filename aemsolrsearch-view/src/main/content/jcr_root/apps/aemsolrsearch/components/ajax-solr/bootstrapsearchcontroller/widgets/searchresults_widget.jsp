@@ -27,7 +27,7 @@
               );
             }
             else {
-              links.push('no items found in current selection');
+              <%-- links.push('no items found in current selection'); --%>
             }
           }
         }

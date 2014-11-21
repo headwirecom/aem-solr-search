@@ -32,7 +32,8 @@
             <cq:include script="widgets/searchbreadbox_widget.jsp" />
             <cq:include script="widgets/searchinput_widget.jsp" />
             <cq:include script="widgets/registerwidget_hook.jsp" />
-
+            Manager.setStore(new AjaxSolr.ParameterHistoryStore());
+            Manager.store.exposed = [ 'q', 'fq', 'start' ];
             Manager.init();
 
             <%-- Pass the Solr core name as a request parameter to the proxy. --%>
@@ -52,7 +53,7 @@
 
             var params = {
               <c:if test="${facetsEnabled}">
-              facet: true,
+              'facet': true,
               'facet.field': <cqsearch:json attribute="facetsAvailableFacetKeys"/>,
               'facet.sort': '${facetsFacetSort}',
               'facet.limit': 20,
