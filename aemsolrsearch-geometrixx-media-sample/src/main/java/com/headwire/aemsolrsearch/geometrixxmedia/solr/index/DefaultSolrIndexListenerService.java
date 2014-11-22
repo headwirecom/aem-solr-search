@@ -84,9 +84,6 @@ public class DefaultSolrIndexListenerService implements EventHandler {
                 LOG.info("Page deleted {}", modificationPath);
                 indexService.deleteTreeAndCommit(modification.getPath());
 
-                // Exit loop early on first page modification for deletes.
-                return;
-
             } else if (type == PageModification.ModificationType.CREATED) {
 
                 LOG.info("Page created {}", modificationPath);
