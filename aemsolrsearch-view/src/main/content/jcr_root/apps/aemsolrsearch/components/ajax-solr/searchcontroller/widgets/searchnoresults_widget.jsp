@@ -11,7 +11,7 @@
     AjaxSolr.NoResultWidget = AjaxSolr.AbstractWidget.extend({
 
       beforeRequest: function () {
-        // do nothing
+        $("${noResultsTarget}").empty();
       },
 
       afterRequest: function () {
