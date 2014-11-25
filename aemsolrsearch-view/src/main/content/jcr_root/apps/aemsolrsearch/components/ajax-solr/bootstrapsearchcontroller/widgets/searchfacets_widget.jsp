@@ -58,9 +58,8 @@
             $(this.target).find('li').last().after('<li class="list-group-item list-group-item-info"><a href="javascript:void(0)" class="show-more">${facetsShowMore}</a></li>');
         }
 
-        <%-- Hide any facet containers with no values. --%>
         if ( $(this.target).find('li').length <= 1) {
-          $(this.target).hide();
+          $(this.target).find('li').last().after('<li class="facet_item list-group-item">No facets available</li>');
         }
       }
     });
