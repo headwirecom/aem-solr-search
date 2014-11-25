@@ -26,6 +26,7 @@
             });
 
             <cq:include script="widgets/searchresults_widget.jsp" />
+            <cq:include script="widgets/searchnoresults_widget.jsp" />
             <cq:include script="widgets/searchstatistics_widget.jsp" />
             <cq:include script="widgets/searchpagination_widget.jsp" />
             <cq:include script="widgets/searchfacets_widget.jsp" />

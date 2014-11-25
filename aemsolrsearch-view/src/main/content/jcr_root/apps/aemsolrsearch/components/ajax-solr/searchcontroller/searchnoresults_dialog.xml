@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          jcr:primaryType="cq:WidgetCollection">
+
+    <enable
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Enable Search No Results"
+            name="./no-results-enable"
+            defaultValue="{Boolean}true"
+            type="checkbox"
+            xtype="selection"
+            />
+    <no-results-id
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML ID"
+            name="./no-results-id"
+            defaultValue="nosearchresults"
+            xtype="textfield"
+            />
+
+    <no-results-target
+            jcr:primaryType="cq:Widget"
+            fieldLabel="HTML Target"
+            name="./no-results-target"
+            defaultValue="#nosearchresults"
+            xtype="textfield"
+            />
+    <no-results-parsys
+            jcr:primaryType="cq:Widget"
+            fieldLabel="Parsys Include"
+            name="./no-results-parsys"
+            parBrowse="{Boolean}true"
+            xtype="pathfield"
+            />
+
+</jcr:root>

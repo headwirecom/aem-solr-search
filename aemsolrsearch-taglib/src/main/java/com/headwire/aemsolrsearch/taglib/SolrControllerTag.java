@@ -10,6 +10,7 @@ import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import com.headwire.aemsolrsearch.services.util.StringUtil;
 import com.squeakysand.jsp.tagext.annotations.JspTag;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,15 @@ public class SolrControllerTag extends CqSimpleTagSupport {
     public static final String PROPERTY_RESULTS_HTML_TARGET = "results-target";
     /** JCR property holding available result fields. */
     public static final String PROPERTY_RESULTS_AVAILABLE_FIELDS = "solr-result-fields";
+
+    /** JCR property holding no results enabled state. */
+    public static final String PROPERTY_NO_RESULTS_ENABLE = "no-results-enable";
+    /** JCR property holding HTML ID targeting no search results. */
+    public static final String PROPERTY_NO_RESULTS_HTML_ID = "no-results-id";
+    /** JCR property holding  HTML target for no search results. */
+    public static final String PROPERTY_NO_RESULTS_HTML_TARGET = "no-results-target";
+    /** JCR property holding no results parsys location. */
+    public static final String PROPERTY_NO_RESULTS_PARSYS = "no-results-parsys";
 
     /** JCR property holding the facet enabled state. */
     public static final String PROPERTY_FACETS_ENABLE = "facets-enable";
@@ -138,6 +148,16 @@ public class SolrControllerTag extends CqSimpleTagSupport {
     /** JSP attribute name holding the available result field. */
     public static final String JSP_ATTR_RESULTS_AVAILABLE_FILEDS = "resultsAvailableFields";
 
+    /** JSP attribute name holding the state variable for no results. If <code>true</code>
+     *  results are enabled, otherwise it is not. */
+    public static final String JSP_ATTR_NO_RESULTS_ENABLED = "noResultsEnabled";
+    /** JSP attribute name holding the search results HTML ID. */
+    public static final String JSP_ATTR_NO_RESULTS_HTML_ID = "noResultsId";
+    /** JSP attribute name holding the search results HTML target. */
+    public static final String JSP_ATTR_NO_RESULTS_HTML_TARGET = "noResultsTarget";
+    /** JSP attribute name holding the search results HTML target. */
+    public static final String JSP_ATTR_NO_RESULTS_PARSYS_URL = "noParsysUrl";
+
     /** JSP attribute name holding the state variable for facets. If <code>true</code>
      *  facets are enabled, otherwise it is not. */
     public static final String JSP_ATTR_FACETS_ENABLED = "facetsEnabled";
@@ -217,10 +237,16 @@ public class SolrControllerTag extends CqSimpleTagSupport {
 
         // Results
         getRequest().setAttribute(JSP_ATTR_RESULTS_ENABLED,  getProperty(PROPERTY_RESULTS_ENABLE, false));
-        getRequest().setAttribute(JSP_ATTR_RESULTS_PER_PAGE,  getProperty(PROPERTY_RESULTS_PER_PAGE, "10"));
+        getRequest().setAttribute(JSP_ATTR_RESULTS_PER_PAGE, getProperty(PROPERTY_RESULTS_PER_PAGE, "10"));
         getRequest().setAttribute(JSP_ATTR_RESULTS_HTML_ID,  getProperty(PROPERTY_RESULTS_HTML_ID, "docs"));
         getRequest().setAttribute(JSP_ATTR_RESULTS_HTML_TARGET,  getProperty(PROPERTY_RESULTS_HTML_TARGET, "#search"));
         getRequest().setAttribute(JSP_ATTR_RESULTS_AVAILABLE_FILEDS,  getProperty(PROPERTY_RESULTS_AVAILABLE_FIELDS, new String[]{}));
+
+        // No Results
+        getRequest().setAttribute(JSP_ATTR_NO_RESULTS_ENABLED,  getProperty(PROPERTY_NO_RESULTS_ENABLE, false));
+        getRequest().setAttribute(JSP_ATTR_NO_RESULTS_HTML_ID,  getProperty(PROPERTY_NO_RESULTS_HTML_ID, "nosearchresults"));
+        getRequest().setAttribute(JSP_ATTR_NO_RESULTS_HTML_TARGET,  getProperty(PROPERTY_NO_RESULTS_HTML_TARGET, "#nosearchresults"));
+        getRequest().setAttribute(JSP_ATTR_NO_RESULTS_PARSYS_URL,  formatNoResultsParsysUrl(getProperty(PROPERTY_NO_RESULTS_PARSYS, "#")));
 
         // Facets
         getRequest().setAttribute(JSP_ATTR_FACETS_ENABLED, getProperty(PROPERTY_FACETS_ENABLE, false));
@@ -258,6 +284,29 @@ public class SolrControllerTag extends CqSimpleTagSupport {
         getRequest().setAttribute(JSP_ATTR_ADVANCED_FILTER_QUERIES_IN_BREADBOX_ENABLED,  getProperty(PROPERTY_ADVANCED_FILTER_QUERIES_IN_BREADBOX_ENABLED, false));
         getRequest().setAttribute(JSP_ATTR_ADVANCED_SEARCH_HANDLER,  getProperty(PROPERTY_ADVANCED_SEARCH_HANDLER, ""));
 
+    }
+
+    /**
+     * Converts a 'parBrowse' value from a pathfield xtype widget to a URL that can be addressed directly.
+     *
+     * From: /content/aemsolrsearch/aem-solr-search2.html#par-main_text
+     * To: /content/aemsolrsearch/aem-solr-search/_jcr_content/par-main/text.html
+     * @param parBrowseValue
+     * @return a converted string on success, or a '#' otherwise.
+     */
+    private String formatNoResultsParsysUrl(String parBrowseValue) {
+        if (StringUtils.isBlank(parBrowseValue) || "#".equals(parBrowseValue)) { return "#"; }
+
+        String tokens[] = parBrowseValue.split("#");
+        if (null == tokens || tokens.length !=2) { return "#"; }
+
+        StringBuilder parsysUrl = new StringBuilder();
+        parsysUrl.append(tokens[0].replace(".html", "/_jcr_content/"))
+                .append(tokens[1].replaceFirst("_", "/"))
+                .append(".html");
+        LOG.debug("Converted parBrowse value from '{}' to '{}'", parBrowseValue, parsysUrl);
+
+        return parsysUrl.toString();
     }
 
     private String formatSolrEndPointAndCore() {

@@ -48,6 +48,17 @@
                             />
                 </items>
             </results>
+            <noresults
+                    jcr:primaryType="cq:Panel"
+                    title="No Results">
+                <items jcr:primaryType="cq:WidgetCollection">
+                    <results
+                            jcr:primaryType="cq:Widget"
+                            xtype="cqinclude"
+                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchnoresults_dialog.infinity.json"
+                            />
+                </items>
+            </noresults>
             <facets
                     jcr:primaryType="cq:Panel"
                     title="Facets">
