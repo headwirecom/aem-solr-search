@@ -6,4 +6,6 @@
     solr.server.port="8080"
     solr.context.path="/solr"
     solr.proxy.enabled="true"
-    solr.proxy.url="http://localhost:4502/apps/solr/proxy"/>
+    solr.proxy.url="http://localhost:4502/apps/solr/proxy"
+    solr.proxy.allowed.handlers="[/select,/geometrixx-media-search]"
+    />

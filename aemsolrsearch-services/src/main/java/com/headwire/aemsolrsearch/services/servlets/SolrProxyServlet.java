@@ -90,4 +90,10 @@ public class SolrProxyServlet extends ProxyServlet {
         return false;
 
     }
+
+    @Override
+    public boolean isValidRequest(SlingHttpServletRequest request) {
+        final String searchHandler = (request.getParameter("qt") != null) ? request.getParameter("qt") : "/select";
+        return solrConfigurationService.isRequestHandlerAllowed(searchHandler);
+    }
 }

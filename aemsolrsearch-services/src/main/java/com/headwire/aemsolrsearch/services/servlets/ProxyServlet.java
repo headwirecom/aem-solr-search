@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.util.BitSet;
 import java.util.Enumeration;
@@ -69,6 +70,13 @@ public abstract class ProxyServlet extends SlingSafeMethodsServlet {
      */
     public abstract String sanitizeQueryString(String queryString, HttpServletRequest request);
 
+    /**
+     * Determines if a request is valid.
+     * @param request
+     * @return
+     */
+    public abstract boolean isValidRequest(SlingHttpServletRequest request);
+
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException, IOException {
@@ -80,6 +88,16 @@ public abstract class ProxyServlet extends SlingSafeMethodsServlet {
         } catch (Exception e) {
             LOG.info("Error retrieving Solr endpoint for proxy");
             throw new RuntimeException("Error retrieving Solr endpoint for proxy", e);
+        }
+
+        if (!isValidRequest(request)) {
+            LOG.warn("Invalid request received: {}", targetUri);
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            out.print("{msg: 'invalid request'}");
+            out.flush();
+            return;
         }
 
         HttpParams hcParams = new BasicHttpParams();

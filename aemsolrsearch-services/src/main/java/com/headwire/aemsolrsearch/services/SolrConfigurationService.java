@@ -9,6 +9,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
 import org.apache.felix.scr.annotations.Properties;
 import org.json.simple.JSONArray;
@@ -60,10 +61,15 @@ import java.util.*;
             label = "Enable Proxy",
             description = "Enable Proxy. Must be either 'true' or 'false'"),
         @Property(
-                name = SolrConfigurationServiceAdminConstants.PROXY_URL,
-                value = "http://localhost:4502/apps/solr/proxy",
-                label = "Proxy URL",
-                description = "Absolute proxy URL")
+            name = SolrConfigurationServiceAdminConstants.PROXY_URL,
+            value = "http://localhost:4502/apps/solr/proxy",
+            label = "Proxy URL",
+                description = "Absolute proxy URL"),
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS,
+            value = { "/select", "/geometrixx-media-search" },
+            label = "Allowed request handlers",
+            description = "Whitelist of allowed request handlers")
 })
 /**
  * SolrConfigurationService provides a services for setting and getting Solr configuration information.
@@ -78,12 +84,14 @@ public class SolrConfigurationService {
     private String contextPath;
     private String proxyUrl;
     private boolean proxyEnabled;
+    private String[] allowedRequestHandlers;
 
     public static final String DEFAULT_PROTOCOL = "http";
     public static final String DEFAULT_SERVER_NAME = "localhost";
     public static final String DEFAULT_SERVER_PORT = "8993";
     public static final String DEFAULT_CONTEXT_PATH = "/solr";
     public static final String DEFAULT_PROXY_URL = "http://localhost:4502/apps/solr/proxy";
+    public static final String[] DEFAULT_ALLOWED_REQUEST_HANDLERS = new String[] { "/select", "/geometrixx-media-search" };
 
     /**
      * Returns the Solr endpoint as a full URL.
@@ -332,38 +340,53 @@ public class SolrConfigurationService {
         return availableIndexedFields;
     }
 
+    public boolean isRequestHandlerAllowed(String requestHandler) {
+
+        if (StringUtils.isBlank(requestHandler)) { return false; }
+
+        for (String whitelist: allowedRequestHandlers) {
+            if (whitelist.equalsIgnoreCase(requestHandler)) { return true; }
+        }
+
+        return false;
+    }
+
     @Activate
-    protected void activate(final Map<String, String> config) {
+    protected void activate(final Map<String, Object> config) {
         resetService(config);
     }
 
     @Modified
-    protected void modified(final Map<String, String> config) {
+    protected void modified(final Map<String, Object> config) {
         resetService(config);
     }
 
-    private synchronized void resetService(final Map<String, String> config) {
+    private synchronized void resetService(final Map<String, Object> config) {
         LOG.info("Resetting Solr configuration service using configuration: " + config);
 
         protocol = config.containsKey(SolrConfigurationServiceAdminConstants.PROTOCOL) ?
-            config.get(SolrConfigurationServiceAdminConstants.PROTOCOL) : DEFAULT_PROTOCOL;
+                (String)config.get(SolrConfigurationServiceAdminConstants.PROTOCOL) : DEFAULT_PROTOCOL;
 
         serverName = config.containsKey(SolrConfigurationServiceAdminConstants.SERVER_NAME) ?
-                config.get(SolrConfigurationServiceAdminConstants.SERVER_NAME) : DEFAULT_SERVER_NAME;
+                (String)config.get(SolrConfigurationServiceAdminConstants.SERVER_NAME) : DEFAULT_SERVER_NAME;
 
         serverPort = config.containsKey(SolrConfigurationServiceAdminConstants.SERVER_PORT) ?
-                config.get(SolrConfigurationServiceAdminConstants.SERVER_PORT) : DEFAULT_SERVER_PORT;
+                (String)config.get(SolrConfigurationServiceAdminConstants.SERVER_PORT) : DEFAULT_SERVER_PORT;
 
         contextPath = config.containsKey(SolrConfigurationServiceAdminConstants.CONTEXT_PATH) ?
-                config.get(SolrConfigurationServiceAdminConstants.CONTEXT_PATH) : DEFAULT_CONTEXT_PATH;
+                (String)config.get(SolrConfigurationServiceAdminConstants.CONTEXT_PATH) : DEFAULT_CONTEXT_PATH;
 
         solrEndPoint = formatSolrEndPoint();
 
         proxyUrl = config.containsKey(SolrConfigurationServiceAdminConstants.PROXY_URL) ?
-                config.get(SolrConfigurationServiceAdminConstants.PROXY_URL) : DEFAULT_PROXY_URL;
+                (String)config.get(SolrConfigurationServiceAdminConstants.PROXY_URL) : DEFAULT_PROXY_URL;
 
         proxyEnabled = config.containsKey(SolrConfigurationServiceAdminConstants.PROXY_ENABLED) ?
-                Boolean.parseBoolean(config.get(SolrConfigurationServiceAdminConstants.PROXY_ENABLED)) : true;
+                Boolean.parseBoolean((String)config.get(SolrConfigurationServiceAdminConstants.PROXY_ENABLED)) : true;
+
+        allowedRequestHandlers = config.containsKey(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
+                ? (String[])config.get(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
+                : DEFAULT_ALLOWED_REQUEST_HANDLERS;
     }
 
     private String formatSolrEndPoint() {

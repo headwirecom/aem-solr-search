@@ -25,5 +25,6 @@ public class SolrConfigurationServiceAdminConstants {
     public static final String PROXY_ENABLED = "solr.proxy.enabled";
     /** Proxy URL. */
     public static final String PROXY_URL = "solr.proxy.url";
-
+    /** Allowed request handlers. */
+    public static final String ALLOWED_REQUEST_HANDLERS = "solr.proxy.allowed.handlers";
 }
