@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
@@ -54,6 +55,35 @@ public class SolrSearchResults {
 			solrDocumentListStart = 0;
 			solrDocumentListSize = 0;
 		}
+		
+		cleanQueryAndResponseFacets();
+	}
+	
+	private void cleanQueryAndResponseFacets() {
+		String[] filterQueries = solrQuery.getFilterQueries();
+		if (filterQueries != null) {
+			for (int i=0; i<filterQueries.length; i++)
+				filterQueries[i] = cleanFilterQuery(filterQueries[i]);
+			solrQuery.setFilterQueries(filterQueries);
+		}
+		
+		for (FacetField field : queryResponse.getFacetFields())
+			for (FacetField.Count fieldCount : field.getValues())
+				fieldCount.setName(cleanFilterQuery(fieldCount.getName()));
+	}
+	
+	private String cleanFilterQuery(String query) {
+		StringBuffer retVal = new StringBuffer();
+		for (String queryPart : query.split(":")) {
+			if (retVal.length() > 0)
+				retVal.append(":");
+			
+			if (queryPart.startsWith("\"") && queryPart.endsWith("\""))
+				retVal.append(queryPart.substring(1, queryPart.length()-1));
+			else
+				retVal.append(queryPart);
+		}
+		return retVal.toString();
 	}
 	
 	public SolrQuery getSolrQuery() {

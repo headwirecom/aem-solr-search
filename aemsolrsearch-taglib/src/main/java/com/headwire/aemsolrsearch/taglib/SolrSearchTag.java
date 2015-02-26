@@ -151,6 +151,7 @@ public class SolrSearchTag extends CqSimpleTagSupport {
 		if (null != getAdvancedFilterQueries()) {
 			uniquefilterQueries.addAll(Arrays.asList(getAdvancedFilterQueries()));
 		}
+		uniquefilterQueries = cleanFilterQueries(uniquefilterQueries);
 		if (!uniquefilterQueries.isEmpty()) {			
 			query.setFilterQueries(uniquefilterQueries.toArray(new String[uniquefilterQueries.size()]));
 		}
@@ -212,6 +213,30 @@ public class SolrSearchTag extends CqSimpleTagSupport {
 		}
 		
 		return query;
+	}
+	
+	private Set<String> cleanFilterQueries(Set<String> queries) {
+		Set<String> retVal = new HashSet<String>();
+		for (String query : queries)
+			retVal.add(cleanFilterQuery(query));
+		return retVal;
+	}
+	
+	private String cleanFilterQuery(String query) {
+		StringBuffer retVal = new StringBuffer();
+		for (String queryPart : query.split(":")) {
+			if (retVal.length() > 0)
+				retVal.append(":");
+			
+			if ((queryPart.contains(" ") ||
+					queryPart.contains("%20") ||
+					queryPart.contains("+")) &&
+					!queryPart.contains("\""))
+				retVal.append("\"" + queryPart + "\"");
+			else
+				retVal.append(queryPart);
+		}
+		return retVal.toString();
 	}
 	
 	/** Return name to retrieve this object in JSP/Servlet page scope. */
