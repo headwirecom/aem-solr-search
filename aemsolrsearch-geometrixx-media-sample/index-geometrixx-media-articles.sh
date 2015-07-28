@@ -15,7 +15,7 @@ SLING_RESOURCE_TYPE=geometrixx-media/components/page/article
 SAVE_FILE=article.json
 
 # Request from CQ a dump of the content in the Solr JSON update handler format
-curl -s -u ${CQ_USER}:${CQ_PASS} -o ${SAVE_FILE} http://localhost:4502/apps/geometrixx-media/solr/updatehandler?type=${SLING_RESOURCE_TYPE}
+curl -s -u ${CQ_USER}:${CQ_PASS} -o ${SAVE_FILE} http://${CQ_HOST}:${CQ_PORT}/apps/geometrixx-media/solr/updatehandler?type=${SLING_RESOURCE_TYPE}
 
 # This will delete all documents in your Solr core. Adjust according, perhaps, by content type.
 curl http://${SOLR_HOST}:${SOLR_PORT}/solr/${SOLR_CORE}/update?commit=true -H "Content-Type: application/json" --data-binary '{"delete": { "query":"*:*" }}'

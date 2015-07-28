@@ -148,6 +148,12 @@
         </dependency>
         <dependency>
             <groupId>com.headwire.solr</groupId>
+            <artifactId>aemsolrsearch-search-service</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.headwire.solr</groupId>
             <artifactId>aemsolrsearch-solrj</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
