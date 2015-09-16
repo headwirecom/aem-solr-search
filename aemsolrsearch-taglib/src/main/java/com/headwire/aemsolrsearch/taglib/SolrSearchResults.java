@@ -61,11 +61,11 @@ public class SolrSearchResults {
 	
 	private void cleanQueryAndResponseFacets() {
 		String[] filterQueries = solrQuery.getFilterQueries();
-		if (filterQueries != null) {
-			for (int i=0; i<filterQueries.length; i++)
-				filterQueries[i] = cleanFilterQuery(filterQueries[i]);
-			solrQuery.setFilterQueries(filterQueries);
-		}
+//		if (filterQueries != null) {
+//			for (int i=0; i<filterQueries.length; i++)
+//				filterQueries[i] = cleanFilterQuery(filterQueries[i]);
+//			solrQuery.setFilterQueries(filterQueries);
+//		}
 		
 		for (FacetField field : queryResponse.getFacetFields())
 			for (FacetField.Count fieldCount : field.getValues())
