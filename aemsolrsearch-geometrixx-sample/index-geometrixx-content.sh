@@ -9,13 +9,15 @@ CQ_PORT=4502
 
 SOLR_HOST=localhost
 SOLR_PORT=8080
-SOLR_CORE=collection1
+SOLR_CORE=geometrixx
 
-SLING_RESOURCE_TYPE=geometrixx-media/components/page/article
-SAVE_FILE=article.json
+SLING_RESOURCE_TYPE1=geometrixx/components/contentpage
+SLING_RESOURCE_TYPE2=geometrixx/components/homepage
+SLING_RESOURCE_TYPE3=geometrixx/components/widepage
+SAVE_FILE=geometrixx.json
 
 # Request from CQ a dump of the content in the Solr JSON update handler format
-curl -s -u ${CQ_USER}:${CQ_PASS} -o ${SAVE_FILE} http://${CQ_HOST}:${CQ_PORT}/apps/geometrixx-media/solr/updatehandler?type=${SLING_RESOURCE_TYPE}
+curl -s -u ${CQ_USER}:${CQ_PASS} -o ${SAVE_FILE} http://${CQ_HOST}:${CQ_PORT}/apps/geometrixx/solr/updatehandler?type=${SLING_RESOURCE_TYPE1}'&'type=${SLING_RESOURCE_TYPE2}'&'type=${SLING_RESOURCE_TYPE3}
 
 # This will delete all documents in your Solr core. Adjust according, perhaps, by content type.
 curl http://${SOLR_HOST}:${SOLR_PORT}/solr/${SOLR_CORE}/update?commit=true -H "Content-Type: application/json" --data-binary '{"delete": { "query":"*:*" }}'

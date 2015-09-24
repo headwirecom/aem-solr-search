@@ -10,13 +10,13 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aemsolrsearch-geometrixx-media-sample</artifactId>
+    <artifactId>aemsolrsearch-geometrixx-sample</artifactId>
     <packaging>bundle</packaging>
 
-    <name>AEM Solr Search Geometrixx Media Sample</name>
+    <name>AEM Solr Search Geometrixx Sample</name>
 
     <description>
-        AEM Solr Search Geometrixx Media Sample
+        AEM Solr Search Geometrixx Sample
     </description>
 
     <properties>
@@ -36,6 +36,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -217,7 +218,7 @@
 
     <profiles>
         <profile>
-            <id>auto-deploy-geo</id>
+            <id>auto-deploy-geo-sample</id>
             <build>
                 <plugins>
                     <!--
