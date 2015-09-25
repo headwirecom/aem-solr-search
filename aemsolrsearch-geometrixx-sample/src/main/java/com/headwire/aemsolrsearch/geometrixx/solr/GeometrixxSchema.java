@@ -13,5 +13,6 @@ public interface GeometrixxSchema {
     public static final String SLING_RESOUCE_TYPE = "sling_resource_type";
     public static final String TITLE = "title";
     public static final String URL = "url";
+    public static final String BODY = "body";
 
 }

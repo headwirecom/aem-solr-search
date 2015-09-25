@@ -92,6 +92,7 @@
         <module>aemsolrsearch-geometrixx-media-sample</module>
         <module>aemsolrsearch-geometrixx-sample</module>
         <module>aemsolrsearch-geometrixx-media-sample-content</module>
+    	<module>aemsolrsearch-geometrixx-sample-content</module>
   </modules>
 
     <dependencyManagement>

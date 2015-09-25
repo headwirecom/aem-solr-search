@@ -24,7 +24,7 @@ import java.util.*;
 public class SolrIndexingUtil{
 	private static final Logger LOG = LoggerFactory.getLogger(SolrIndexingUtil.class);
 
-	public static Map<String, String> extractDataFromPage(Page page, Map<String, ComponentDataConfig> componentDataConfigMap)
+	/*public static Map<String, String> extractDataFromPage(Page page, Map<String, ComponentDataConfig> componentDataConfigMap)
 	{
 		Map<String, String> extractedData = new LinkedHashMap<String, String>();
 		Resource contentResource = page.getContentResource();
@@ -32,7 +32,7 @@ public class SolrIndexingUtil{
 		dataExtractionHelper(contentResource, componentDataConfigMap, extractedData);
 
 		return extractedData;
-	}
+	}*/
 
 	private static void dataExtractionHelper(Resource resource, Map<String, ComponentDataConfig> componentDataConfigMap, Map<String, String> extractedData)
 	{

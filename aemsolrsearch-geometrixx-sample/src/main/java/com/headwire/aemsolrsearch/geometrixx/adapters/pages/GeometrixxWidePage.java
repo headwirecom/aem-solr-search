@@ -4,7 +4,9 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.NameConstants;
 import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentType;
+import com.headwire.aemsolrsearch.geometrixx.config.ComponentDataConfig;
 import com.headwire.aemsolrsearch.geometrixx.solr.SolrTimestamp;
+import com.headwire.aemsolrsearch.geometrixx.util.SolrIndexingUtil;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
@@ -18,6 +20,7 @@ import static com.headwire.aemsolrsearch.geometrixx.solr.GeometrixxSchema.*;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Data model representing a Geometrixx Wide page.
@@ -34,6 +37,7 @@ public class GeometrixxWidePage extends GeometrixxContentType {
     private String url;
     private String slingResourceType;
     private Date lastUpdate;
+    private String body;
 
     public GeometrixxWidePage(String id) {
         this.id = id;
@@ -47,6 +51,9 @@ public class GeometrixxWidePage extends GeometrixxContentType {
         final String title = valueMap.get("jcr:title", "");
         final String description = valueMap.get("jcr:description", "");
         final String slingResourceType = valueMap.get("sling:resourceType", "");
+        Map<String, ComponentDataConfig> componentDataConfigMap = SolrIndexingUtil.getComponentDataConfigs();
+        Map<String, String> mainParsysProps = SolrIndexingUtil.extractDataFromParsys(jcrResource, "par", componentDataConfigMap);
+        final String bodyText = mainParsysProps.containsKey("bodyText") ? mainParsysProps.get("bodyText") : "";
 
         final Date lastUpdate = valueMap.get(NameConstants.PN_PAGE_LAST_MOD, Date.class);
 
@@ -58,7 +65,8 @@ public class GeometrixxWidePage extends GeometrixxContentType {
                 .withDescription(description)
                 .withUrl(resource.getPath() + ".html")
                 .withLastUpdate(lastUpdate)
-                .withSlingResourceType(slingResourceType);
+                .withSlingResourceType(slingResourceType)
+        		.withBody(bodyText);
 
         return article;
     }
@@ -87,6 +95,11 @@ public class GeometrixxWidePage extends GeometrixxContentType {
         this.url = url;
         return this;
     }
+    
+    public GeometrixxWidePage withBody(String body) {
+    	this.body = body;
+    	return this;
+    }
 
     public String getDescription() {
         return description;
@@ -111,6 +124,10 @@ public class GeometrixxWidePage extends GeometrixxContentType {
     public String getUrl() {
         return url;
     }
+    
+    public String getBody() {
+    	return body;
+    }
 
     @Override
     public String toString() {
@@ -121,6 +138,7 @@ public class GeometrixxWidePage extends GeometrixxContentType {
         sb.append(", url='").append(url).append('\'');
         sb.append(", slingResourceType='").append(slingResourceType).append('\'');
         sb.append(", lastUpdate=").append(lastUpdate);
+        sb.append(", body=").append(body);
         sb.append('}');
         return sb.toString();
     }
@@ -134,6 +152,7 @@ public class GeometrixxWidePage extends GeometrixxContentType {
         json.put(LAST_MODIFIED, SolrTimestamp.convertToUtcAndUseNowIfNull(getLastUpdate()));
         json.put(SLING_RESOUCE_TYPE, getSlingResourceType());
         json.put(URL, getUrl());
+        json.put(BODY, getBody());
 
         return json;
     }
@@ -149,6 +168,7 @@ public class GeometrixxWidePage extends GeometrixxContentType {
         doc.addField(LAST_MODIFIED, SolrTimestamp.convertToUtcAndUseNowIfNull(getLastUpdate()));
         doc.addField(SLING_RESOUCE_TYPE, getSlingResourceType());
         doc.addField(URL, getUrl());
+        doc.addField(BODY, getBody());
 
         return doc;
     }

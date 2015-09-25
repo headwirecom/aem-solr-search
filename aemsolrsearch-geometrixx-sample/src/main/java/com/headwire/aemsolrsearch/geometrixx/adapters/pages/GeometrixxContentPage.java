@@ -38,6 +38,7 @@ public class GeometrixxContentPage extends GeometrixxContentType {
     private String url;
     private String slingResourceType;
     private Date lastUpdate;
+    private String body;
 
     public GeometrixxContentPage(String id) {
         this.id = id;
@@ -53,14 +54,15 @@ public class GeometrixxContentPage extends GeometrixxContentType {
         final String slingResourceType = valueMap.get("sling:resourceType", "");
         final Date lastUpdate = valueMap.get(NameConstants.PN_PAGE_LAST_MOD, Date.class);
         Map<String, ComponentDataConfig> componentDataConfigMap = SolrIndexingUtil.getComponentDataConfigs();
-        Map<String, String> mainParsysProps = SolrIndexingUtil.extractDataFromParsys(resource, "mainParsys", componentDataConfigMap);
-
+        Map<String, String> mainParsysProps = SolrIndexingUtil.extractDataFromParsys(jcrResource, "par", componentDataConfigMap);
+        final String bodyText = mainParsysProps.containsKey("bodyText") ? mainParsysProps.get("bodyText") : "";
         GeometrixxContentPage contentPage = new GeometrixxContentPage(id)
                 .withTitle(title)
                 .withDescription(description)
                 .withUrl(resource.getPath() + ".html")
                 .withLastUpdate(lastUpdate)
-                .withSlingResourceType(slingResourceType);
+                .withSlingResourceType(slingResourceType)
+        		.withBody(bodyText);
 
         return contentPage;
     }
@@ -89,6 +91,11 @@ public class GeometrixxContentPage extends GeometrixxContentType {
         this.url = url;
         return this;
     }
+    
+    public GeometrixxContentPage withBody(String body) {
+    	this.body = body;
+    	return this;
+    }
 
     public String getDescription() {
         return description;
@@ -113,6 +120,10 @@ public class GeometrixxContentPage extends GeometrixxContentType {
     public String getUrl() {
         return url;
     }
+    
+    public String getBody() {
+    	return body;
+    }
 
     @Override
     public String toString() {
@@ -123,6 +134,7 @@ public class GeometrixxContentPage extends GeometrixxContentType {
         sb.append(", url='").append(url).append('\'');
         sb.append(", slingResourceType='").append(slingResourceType).append('\'');
         sb.append(", lastUpdate=").append(lastUpdate);
+        sb.append(", body=").append(body);
         sb.append('}');
         return sb.toString();
     }
@@ -136,6 +148,7 @@ public class GeometrixxContentPage extends GeometrixxContentType {
         json.put(LAST_MODIFIED, SolrTimestamp.convertToUtcAndUseNowIfNull(getLastUpdate()));
         json.put(SLING_RESOUCE_TYPE, getSlingResourceType());
         json.put(URL, getUrl());
+        json.put(BODY, getBody());
 
         return json;
     }
@@ -151,6 +164,7 @@ public class GeometrixxContentPage extends GeometrixxContentType {
         doc.addField(LAST_MODIFIED, SolrTimestamp.convertToUtcAndUseNowIfNull(getLastUpdate()));
         doc.addField(SLING_RESOUCE_TYPE, getSlingResourceType());
         doc.addField(URL, getUrl());
+        doc.addField(BODY, getBody());
 
         return doc;
     }

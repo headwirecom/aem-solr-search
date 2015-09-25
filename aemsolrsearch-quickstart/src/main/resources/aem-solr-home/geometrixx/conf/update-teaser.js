@@ -10,7 +10,13 @@ function processAdd(cmd) {
     content = doc.getFieldValue("body");
 
     teaser = '';
-    
+    if (content.length() > 150) {
+      teaser = content.substring(0, 150);
+      teaser += "...";
+    } else {
+	teaser = content;
+    }
+
     doc.setField("teaser", teaser);
 }
 
