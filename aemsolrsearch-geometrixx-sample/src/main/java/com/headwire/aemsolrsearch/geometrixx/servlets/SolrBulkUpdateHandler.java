@@ -8,7 +8,6 @@ import com.day.cq.search.result.SearchResult;
 import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentType;
 import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentTypeFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -16,7 +15,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is an example servlet for the Geometrixx Media site. It produces a Solr Update Handler JSON response for
+ * This is an example servlet for the Geometrixx site. It produces a Solr Update Handler JSON response for
  * for any pages that have the sling:resourceType of <code>geometrixx/components/page</code>. This
  * code is only a demonstration and should only by used in scenarios were the number of content pages is low.
  *
@@ -48,8 +46,8 @@ import java.util.Map;
  * @author <a href="mailto:gg@headwire.com">Gaston Gonzalez</a>
  */
 @Component(
-        name = "com.headwire.aemsolrsearch.geometrixxmedia.servlets.SolrBulkUpdateHandler",
-        label = "AEM Solr Search - Geometrixx Media Solr Update Handler",
+        name = "com.headwire.aemsolrsearch.geometrixx.servlets.SolrBulkUpdateHandler",
+        label = "AEM Solr Search - Geometrixx Solr Update Handler",
         description = "Serializes content to Solr's JSON update handler format",
         immediate = true,
         metatype = true)
@@ -119,7 +117,6 @@ public class SolrBulkUpdateHandler extends SlingSafeMethodsServlet {
                 }
             }
             }
-
         } catch (RepositoryException e) {
             LOG.error("Error getting repository", e);
         } finally {

@@ -58,7 +58,7 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
         try {
             LOG.info("Adding document to Solr index: {}", doc);
 
-            getSolrServer(getCoreName()).add(doc);
+            getSolrClient(getCoreName()).add(doc);
 
         } catch (SolrServerException e) {
             LOG.error("Error indexing: {}", doc, e);
@@ -77,7 +77,7 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
         try {
             LOG.info("Deleting document from Solr index: {}", docId);
 
-            getSolrServer(getCoreName()).deleteById(docId);
+            getSolrClient(getCoreName()).deleteById(docId);
 
         } catch (SolrServerException e) {
             LOG.error("Error deleting document: {}", docId, e);
@@ -98,7 +98,7 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
             LOG.info("Deleting document ID '{}' and its children from Solr index using delete query: '{}'"
                     , docId, deleteQuery);
 
-            getSolrServer(getCoreName()).deleteByQuery(deleteQuery);
+            getSolrClient(getCoreName()).deleteByQuery(deleteQuery);
 
         } catch (SolrServerException e) {
             LOG.error("Error deleting document: {}", docId, e);
@@ -113,7 +113,7 @@ public abstract class AbstractSolrIndexService extends AbstractSolrService {
     public void commit() {
 
         try {
-            getSolrServer(getCoreName()).commit();
+            getSolrClient(getCoreName()).commit();
         } catch (SolrServerException e) {
             LOG.error("Error committing change to index", e);
         } catch (IOException e) {

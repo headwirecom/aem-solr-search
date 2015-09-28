@@ -29,7 +29,7 @@ import java.util.Map;
                 value = "An index service for the Geometrixx Media Site")
 })
 /**
- * GeometrixxMediaSolrIndexService is responsible for performing index operations against Solr.
+ * geometrixxSolrIndexService is responsible for performing index operations against Solr.
  *
  * @author <a href="mailto:gg@headwire.com">Gaston Gonzalez</a>
  */
@@ -67,7 +67,7 @@ public class GeometrixxSolrIndexService extends AbstractSolrIndexService {
 
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr index service using configuration: " + config);
-        resetSolrServerClients();
+        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        

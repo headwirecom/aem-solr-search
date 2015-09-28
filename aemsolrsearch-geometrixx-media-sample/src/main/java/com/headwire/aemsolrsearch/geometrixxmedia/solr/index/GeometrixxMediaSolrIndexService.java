@@ -67,7 +67,7 @@ public class GeometrixxMediaSolrIndexService extends AbstractSolrIndexService {
 
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr index service using configuration: " + config);
-        resetSolrServerClients();
+        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        

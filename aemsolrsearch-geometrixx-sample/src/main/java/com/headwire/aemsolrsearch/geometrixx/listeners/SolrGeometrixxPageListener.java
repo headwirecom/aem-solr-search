@@ -24,7 +24,7 @@ import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.osgi.framework.Constants;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -66,7 +66,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
     public void handleEvent(final Event event) {
 		if (disabled) return;
 		
-		SolrServer solr = getSolrServer(core);
+		SolrClient solr = getSolrClient(core);
 		
 		PageEvent pageEvent = PageEvent.fromEvent(event);
 		if (pageEvent == null) return;
@@ -85,7 +85,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 		}
     }
 	
-	protected void handlePageModification(PageModification mod, SolrServer solr, ResourceResolver resourceResolver) {
+	protected void handlePageModification(PageModification mod, SolrClient solr, ResourceResolver resourceResolver) {
 		String pagePath = mod.getPath();
 		boolean isAllowedPath = false;
 		for (String basePath : basePaths)
@@ -124,7 +124,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 		}
 	}
 	
-	protected void addOrUpdatePage(Resource pageRes, SolrServer solr) {
+	protected void addOrUpdatePage(Resource pageRes, SolrClient solr) {
 		if (pageRes == null) {
 			LOG.error("Page does not exist to add/update in solr");
 			return;
@@ -139,7 +139,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 		}
 	}
 	
-	protected void removePage(String id, SolrServer solr) {
+	protected void removePage(String id, SolrClient solr) {
 		try {
 			LOG.info("Removing page " + id);
 			solr.deleteById(id);
