@@ -50,6 +50,19 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 	* Sample Geometrixx Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html)
     * Solr: [http://localhost:8080/solr/](http://localhost:8080/solr/)
 
+
+How AEM Solr works ?
+--------------------
+
+AEM Solr considers the two main area which works completely independently: indexing the content and then searching the content.
+
+1. Indexing the content: If any new page is created, or any existing page is being modified, it needs to be indexed. The event handlers are being configured to listen to the Page events and Replication events using the Sling Eventing. These event handlers use the SolrJ API to update the Solr index.
+To learn more, refer to the event handler 'com.headwire.aemsolrsearch.geometrixx.listeners.SolrGeometrixxPageListener'.
+
+2. Searching the content: Once your content is indexed in Solr, you will need a search interface. This integration offers support for building search interfaces using search components built on ajax-solr as well as a configurable CQ Listeners for real-time Solr indexing.
+To learn more, refer to 'aemsolrsearch/cqsearch-solr' and 'aemsolrsearch/ajax-solr' components.
+
+
 How to setup the environment manually ?
 ---------------------------------------
 
