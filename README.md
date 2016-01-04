@@ -68,37 +68,78 @@ How to setup the environment manually ?
 
 The steps in 'Getting Started' covers how to setup the environment locally. Following are the steps that you can follow to setup any higher environment like the testing, integration or the production environment.
 
-1. Setup Solr: Considering you have installed the Solr on your target environment, and having the Solr Home Directory, let's name it SOLR_HOME_DIR. The steps below will add the new Core to Solr. The newly added Solr Core can be named as per your requirement.  
+1. Setup Solr: 
+        Download the desired version of the Solr server. For this step if the Linux server has access to the internet you can simply run the following command (relace VERSION with the desired Solr version) to download the Solr archive (otherwise, download it to your local machine and upload to the remote servers using WinSCP).
+               
+               wget  http://apache.claz.org/lucene/solr/5.4.0/solr-VERSION.tgz
+               
+       Extract the content of the downloaded archive into the /opt directory
+       
+               tar zxf /path/to/the/solr.archive.tgz /opt/solr
+       
+       If you get an error regarding the lack of proper access rights, use the sudo prefix to elevate your privileges.
+               
+       Rename the Solr directory for convenience (there are many other ways to find out the version of Solr instance installed)
+       
+               mv /opt/solr-{version} /opt/solr
+       
+       Rename the Jetty instance folder to <YOUR_SITE> 
+       
+               mv /opt/solr/example /opt/solr/<YOUR_SITE>
+       
+       Add the new core 
         
         $ cd aemsolrsearch-quickstart/src/main/resources
-        $ cp -r aem-solr-home/* SOLR_HOME_DIR/
+        $ cp -r aem-solr-home/* /opt/solr/<YOUR_SITE>/solr/
         
-2. Deploy AEM Solr Search by running the following from the root project by replacing the host 'YOUR_TEST_INSTANCE' and the port 'YOUR_TEST_PORT'
+2. Deploy AEM Solr Search by running the following from the root project by replacing the host 'AEM_HOST' and the port 'AEM_PORT'
         
-        $ mvn clean install -Pauto-deploy-all -Dcq.host=<YOUR_TEST_INSTANCE> -Dcq.port=<YOUR_TEST_PORT>
+        $ mvn clean install -Pauto-deploy-all -Dcq.host=<AEM_HOST> -Dcq.port=<AEM_PORT>
+        
+   Or if installing manually, then follow these steps:
+        
+        $ mvn clean package
+        
+   Using AEM's Package Manager, upload and install the following '.zip' file:
+   
+         .../aemsolrsearch-all/target/aemsolrsearch-all-1.0.3-SNAPSHOT.zip
+        
+
+3. Configure the Solr Update Handler
+   From the module .../aem-solr-search/aemsolrsearch-geometrixx-media-sample, configure the class 'com.headwire.aemsolrsearch.geometrixxmedia.servlets.SolrBulkUpdateHandler' properties as per your requirements.
+        
+        id="sling.servlet.paths", value = "/apps/<YOUR SITE>/solr/updatehandler".
+   
+        $ cd aemsolrsearch-geometrixx-media-sample
+        $ mvn clean install -Pauto-deploy-geo -Dcq.host=<AEM_HOST> -Dcq.port=<AEM_PORT>
+      
+   Or if installing manually, then follow these steps:
               
-3. Deploy Geometrixx Media sample and Geomextrixx Sample
-
-        $ mvn install -Pauto-deploy-sample -Dcq.host=<YOUR_TEST_INSTANCE> -Dcq.port=<YOUR_TEST_PORT>
-        $ mvn install -Pauto-deploy-geo -Dcq.host=<YOUR_TEST_INSTANCE> -Dcq.port=<YOUR_TEST_PORT>
-		$ mvn install -Pauto-deploy-geo-sample -Dcq.host=<YOUR_TEST_INSTANCE> -Dcq.port=<YOUR_TEST_PORT>
-
-4. Configure the Solr Update Handler in the configurations
-        id="sling.servlet.paths", value = "/apps/geometrixx-media/solr/updatehandler"
-
-5. Copy the script from the following location to the location where you want to index the text and then configure the script according to your environment details.
+              $ cd aemsolrsearch-geometrixx-media-sample
+              $ mvn clean package
+              
+   Using AEM's Package Manager, upload and install the following '.jar' file:
+              
+               ../target/aemsolrsearch-geometrixx-media-sample-1.0.3-SNAPSHOT.jar
+        
+        
+4. Copy the script from the following location to the location where you want to index the text and then configure the script according to your environment details.
         Edit the file /aemsolrsearch-geometrixx-media-sample/index-geometrixx-media-articles.sh
         and replace the the following fields:
         
-        CQ_USER=<CQ_USER>
-        CQ_PASS=<CQ_PASS>
-        CQ_HOST=<CQ_HOST>
-        CQ_PORT=<CQ_POST>
+        CQ_USER=<AEM_USER>
+        CQ_PASS=<AEM_PASS>
+        CQ_HOST=<AEM_HOST>
+        CQ_PORT=<AEM_POST>
         SOLR_HOST=<SOLR_HOST>
         SOLR_PORT=<SOLR_PORT>
         SOLR_CORE=<SOLR_CORE_NAME>
         SLING_RESOURCE_TYPE=<RESOURCE_TYPE_TO_INDEX_FOR_SEARCHING>
 
+        $ ./index-geometrixx-media-articles.sh
+        
+5. For searching capabilities, the AEM authors can utilize the AEM Solr Search - Client Side components while designing the website pages. 
+      
 
 Security
 --------
