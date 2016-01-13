@@ -29,9 +29,10 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 
         $ mvn clean install -Pauto-deploy-all
         
-2. Deploy Geometrixx Media sample
+3. Deploy Geometrixx Media sample and Geomextrixx Sample
 
         $ mvn install -Pauto-deploy-sample
+		$ mvn install -Pauto-deploy-geo-sample
 
 4. Start Jetty. This will take sometime the first time, as Solr will be fetched from a Maven repository.
 
@@ -44,7 +45,8 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
         $ ./index-geometrixx-media-articles.sh
 
 6. Open a browser and visit:
-    * Sample Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search.html)
+    * Sample Geometrixx Media Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search.html)
+	* Sample Geometrixx Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html)
     * Solr: [http://localhost:8080/solr/](http://localhost:8080/solr/)
 
 

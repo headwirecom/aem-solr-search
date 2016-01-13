@@ -64,7 +64,7 @@ public class DefaultSolrSearchService extends AbstractSolrSearchService {
     
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr search service using configuration: " + config);
-        resetSolrServerClients();
+        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        
