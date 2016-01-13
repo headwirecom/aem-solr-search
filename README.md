@@ -9,7 +9,7 @@ AEM Solr Search provides an intergration between AEM (CQ) and Apache Solr. It in
 * Quick start distribution of Apache Solr 4.9 (intended for development use only).
 * Geometrixx Media sample intergration with Solr.
 
-Note: This README useis Google Analytics for tracking site visits using: [![Analytics](https://ga-beacon.appspot.com/UA-72395016-2/headwirecom/aem-solr-search/readme)](https://github.com/igrigorik/ga-beacon)
+Note: This README uses Google Analytics for tracking site visits using: [![Analytics](https://ga-beacon.appspot.com/UA-72395016-2/headwirecom/aem-solr-search/readme)](https://github.com/igrigorik/ga-beacon)
 
 Requirements
 ------------
