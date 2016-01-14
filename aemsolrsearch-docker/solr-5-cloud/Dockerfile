@@ -31,5 +31,5 @@ RUN set -x \
 	&& bin/solr start -c -p 7574 -z localhost:9983 -s /opt/solr-home/node2/solr \
 	&& curl "http://localhost:8983/solr/admin/collections?action=CREATE&name=collection1&numShards=2&replicationFactor=2&maxShardsPerNode=2&collection.configName=geometrixx"
 
-EXPOSE 7574 8983
+EXPOSE 7574 8983 9983
 CMD bin/solr start -c -p 8983 -s /opt/solr-home/node1/solr && bin/solr start -c -p 7574 -z localhost:9983 -s /opt/solr-home/node2/solr&& bash
