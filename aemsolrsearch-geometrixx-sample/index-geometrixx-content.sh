@@ -8,8 +8,8 @@ CQ_HOST=localhost
 CQ_PORT=4502
 
 SOLR_HOST=localhost
-SOLR_PORT=8080
-SOLR_CORE=geometrixx
+SOLR_PORT=8888
+SOLR_CORE=collection1
 
 SLING_RESOURCE_TYPE1=geometrixx/components/contentpage
 SLING_RESOURCE_TYPE2=geometrixx/components/homepage
