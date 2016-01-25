@@ -41,7 +41,7 @@
                 results-id="result"
                 results-per-page="10"
                 results-target="#searchresults"
-                solr-core="geometrixx"
+                solr-core="collection1"
                 solr-facet-fields="[tags_ss:Tags,author_s:Author]"
                 solr-facet-show-less="- Show Less"
                 solr-facet-show-more="+ Show More"
