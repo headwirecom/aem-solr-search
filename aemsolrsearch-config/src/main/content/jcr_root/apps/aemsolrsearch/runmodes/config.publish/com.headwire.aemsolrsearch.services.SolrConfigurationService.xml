@@ -3,7 +3,7 @@
     jcr:primaryType="sling:OsgiConfig"
     solr.protocol="http"
     solr.server.name="localhost"
-    solr.server.port="8080"
+    solr.server.port="8888"
     solr.context.path="/solr"
     solr.proxy.enabled="true"
     solr.proxy.url="http://localhost:4503/apps/solr/proxy"

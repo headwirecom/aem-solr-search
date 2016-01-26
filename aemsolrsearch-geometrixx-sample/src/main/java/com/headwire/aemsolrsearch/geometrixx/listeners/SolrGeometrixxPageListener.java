@@ -54,7 +54,7 @@ import java.util.Map;
     @Property(name = Constants.SERVICE_DESCRIPTION, value = "Provides a service listening changes in pages to update solr each change"),
 	@Property(name = EventConstants.EVENT_TOPIC, value = {PageEvent.EVENT_TOPIC}),
     @Property(name = "listener.disabled", boolValue = true),
-    @Property(name = "solr.core", value = "geometrixx"),
+    @Property(name = "solr.core", value = "collection1"),
     @Property(name = "listener.paths", value = {""}, cardinality = Integer.MAX_VALUE)
 })
 @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
@@ -163,7 +163,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 	}
 
 	protected boolean disabled = false;
-	protected String core = "geometrixx";
+	protected String core = "collection1";
 	protected String[] basePaths = new String[0];
 	protected void setup(Map<String, Object> params) {
 		if (params.get("listener.disabled") instanceof Boolean)

@@ -8,7 +8,7 @@ CQ_HOST=localhost
 CQ_PORT=4502
 
 SOLR_HOST=localhost
-SOLR_PORT=8080
+SOLR_PORT=8888
 SOLR_CORE=collection1
 
 SLING_RESOURCE_TYPE=geometrixx-media/components/page/article

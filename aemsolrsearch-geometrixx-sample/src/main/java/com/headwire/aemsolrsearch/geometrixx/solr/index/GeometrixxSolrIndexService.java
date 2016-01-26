@@ -37,7 +37,7 @@ public class GeometrixxSolrIndexService extends AbstractSolrIndexService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeometrixxSolrIndexService.class);
     // TODO: Make this an OSGi property
-    private static final String GEOMETRIXX_MEDIA_CORE = "geometrixx";
+    private static final String GEOMETRIXX_MEDIA_CORE = "collection1";
 
     @Reference
     SolrConfigurationService solrConfigService;
