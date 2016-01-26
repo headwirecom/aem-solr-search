@@ -1,6 +1,6 @@
 <%@ include file="/apps/aemsolrsearch/components/global.jspx" %>
 <%@ taglib prefix="cqsearch" uri="http://aemsolrsearch.headwire.com/taglibs/aemsolrsearch-taglib" %>
-<%@ page import="org.apache.solr.client.solrj.response.QueryResponse,org.apache.solr.client.solrj.response.FacetField,com.headwire.cqsearch.taglib.Facet" %>
+<%@ page import="org.apache.solr.client.solrj.response.QueryResponse,org.apache.solr.client.solrj.response.FacetField,com.headwire.aemsolrsearch.taglib.Facet" %>
 <c:set var="results" value="${solrSearchResults}"/>
 <c:set var="solrQuery" value="${solrSearchResults.solrQuery}"/>
 <c:if test="${facetsEnabled}">    

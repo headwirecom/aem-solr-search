@@ -7,7 +7,7 @@
     <artifactId>aemsolrsearch-quickstart</artifactId>
     <groupId>com.headwire.solr</groupId>
     <packaging>pom</packaging>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <name>AEM Solr Search Quickstart</name>
 
@@ -26,8 +26,8 @@
     </licenses>
 
     <properties>
-        <jetty.port>8080</jetty.port>
-        <solr.version>4.9.0</solr.version>
+        <jetty.port>8888</jetty.port>
+        <solr.version>4.10.4</solr.version>
         <solr.home>${project.build.directory}/aem-solr-home</solr.home>
     </properties>
 

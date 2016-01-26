@@ -60,6 +60,8 @@ public class SolrSearchTag extends CqSimpleTagSupport {
 	private int highlightFragsize;
 	private String[] highlightingFields;
     private String searchHandler;
+	private String sort;
+	private String sortDir;
 
 	@Override
 	public void doTag() throws JspException, IOException {
@@ -205,13 +207,26 @@ public class SolrSearchTag extends CqSimpleTagSupport {
 					query.addHighlightField(field);
 				}
 			}
-
-            // Set (qt)
-            if (null != getSearchHandler()) {
-                query.setRequestHandler(getSearchHandler());
-            }
 		}
-		
+
+		// Set (qt)
+		if (null != getSearchHandler()) {
+			query.setRequestHandler(getSearchHandler());
+		}
+
+		if(null != sort && null != sortDir &&
+				(sortDir.equalsIgnoreCase("ASC") ||  sortDir.equalsIgnoreCase("DESC")))
+		{
+			if(sortDir.equalsIgnoreCase("ASC"))
+			{
+				query.setSort(sort, SolrQuery.ORDER.asc);
+			}
+			else
+			{
+				query.setSort(sort, SolrQuery.ORDER.desc);
+			}
+		}
+
 		return query;
 	}
 	
@@ -498,4 +513,28 @@ public class SolrSearchTag extends CqSimpleTagSupport {
     public void setSearchHandler(String searchHandler) {
         this.searchHandler = searchHandler;
     }
+
+	/** Return sort. */
+	public String getSort() {
+		return sort;
+	}
+
+	/** Set sort. */
+	@JspTagAttribute(required = false, rtexprvalue = true)
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	/** Return sortDir. */
+	public String getSortDir() {
+		return sortDir;
+	}
+
+	/** Set sortDir. */
+	@JspTagAttribute(required = false, rtexprvalue = true)
+	public void setSortDir(String sortDir) {
+		this.sortDir = sortDir;
+	}
+
+
 }

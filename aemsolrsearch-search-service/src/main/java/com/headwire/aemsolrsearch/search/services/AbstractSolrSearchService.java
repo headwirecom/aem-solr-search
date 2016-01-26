@@ -1,7 +1,10 @@
 package com.headwire.aemsolrsearch.search.services;
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
+
+import java.io.IOException;
+
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
@@ -20,10 +23,16 @@ public abstract class AbstractSolrSearchService extends AbstractSolrService {
      */
     public QueryResponse query(String solrCore, SolrQuery solrQuery)
             throws SolrServerException {
-        SolrServer server = getSolrServer(solrCore);
+    	SolrClient server = getSolrClient(solrCore);
         LOG.info("Quering {} with '{}'", getSolrServerURI(solrCore), solrQuery);
-        QueryResponse solrResponse = server.query(solrQuery);
-        return solrResponse;
+        QueryResponse solrResponse;
+		try {
+			solrResponse = server.query(solrQuery);
+			return solrResponse;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return new QueryResponse();
     }
 
 }

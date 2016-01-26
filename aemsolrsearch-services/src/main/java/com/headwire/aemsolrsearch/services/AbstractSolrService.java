@@ -3,8 +3,8 @@ package com.headwire.aemsolrsearch.services;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public abstract class AbstractSolrService {
 	
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSolrService.class);
     
-    private static final Map<String, HttpSolrServer> solrServerByCore = new HashMap<String, HttpSolrServer>();
+    private static final Map<String, HttpSolrClient> solrClientByCore = new HashMap<String, HttpSolrClient>();
     
     /**
      * Returns the absolute URL to the Solr server.
@@ -29,45 +29,45 @@ public abstract class AbstractSolrService {
      */
     protected abstract String getSolrServerURI(String solrCore);
 
-    /** Retrieve a particular instance of SolrServer identified by the core name. */
-    protected SolrServer getSolrServer() {
-        return getSolrServer(null);
+    /** Retrieve a particular instance of SolrClient identified by the core name. */
+    protected SolrClient getSolrClient() {
+        return getSolrClient(null);
     }
 
-        /** Retrieve a particular instance of SolrServer identified by the core name. */
-    protected SolrServer getSolrServer(String solrCore) {
+    /** Retrieve a particular instance of SolrClient identified by the core name. */
+    protected SolrClient getSolrClient(String solrCore) {
         
-        final HttpSolrServer existingSolrServer = solrServerByCore.get(solrCore);
+        final HttpSolrClient existingSolrServer = solrClientByCore.get(solrCore);
         if (null != existingSolrServer) {
 			LOG.info("Returning existing instance of Solr Server: {}", existingSolrServer.getBaseURL());
         	return existingSolrServer;
         } else {       
-        	synchronized (solrServerByCore) {
+        	synchronized (solrClientByCore) {
         		// Double check existence while in synchronized block.
-        		if (solrServerByCore.containsKey(solrCore)) {
-        			return solrServerByCore.get(solrCore);
+        		if (solrClientByCore.containsKey(solrCore)) {
+        			return solrClientByCore.get(solrCore);
         		} else {
         			final String solrServerUri = getSolrServerURI(solrCore);
         			LOG.info("Initializing Solr Server: {}", solrServerUri);
-        			HttpSolrServer newSolrServer = new HttpSolrServer(solrServerUri);
-        			solrServerByCore.put(solrCore, newSolrServer);
+        			HttpSolrClient newSolrServer = new HttpSolrClient(solrServerUri);
+        			solrClientByCore.put(solrCore, newSolrServer);
         			return newSolrServer;
         		}
         	}
         }
     }
     
-    /** Reset map of instance of SolrServer by the core name. */
-    protected void resetSolrServerClients() {
-    	synchronized (solrServerByCore) {   
-    		for (HttpSolrServer server : solrServerByCore.values()) {
+    /** Reset map of instance of SolrClient by the core name. */
+    protected void resetSolrClients() {
+    	synchronized (solrClientByCore) {   
+    		for (HttpSolrClient server : solrClientByCore.values()) {
     			try {
     				server.shutdown();
     			} catch(Exception e) {    				
         			LOG.warn("Exception while shutting down Solr Server instance.", e);
     			}
     		}
-    		solrServerByCore.clear();
+    		solrClientByCore.clear();
     	}
     }
 
