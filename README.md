@@ -48,7 +48,7 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 6. Open a browser and visit:
     * Sample Geometrixx Media Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search.html)
 	* Sample Geometrixx Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html)
-    * Solr: [http://localhost:8080/solr/](http://localhost:8080/solr/)
+    * Solr: [http://localhost:8888/solr/](http://localhost:8888/solr/)
 
 
 Security
