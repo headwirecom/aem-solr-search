@@ -20,6 +20,7 @@ import com.day.cq.wcm.api.PageModification;
 import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentType;
 import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentTypeFactory;
 import com.headwire.aemsolrsearch.search.services.DefaultSolrSearchService;
+import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -53,24 +54,26 @@ import java.util.Map;
     @Property(name = Constants.SERVICE_VENDOR, value = "headwire.com, Inc."),
     @Property(name = Constants.SERVICE_DESCRIPTION, value = "Provides a service listening changes in pages to update solr each change"),
 	@Property(name = EventConstants.EVENT_TOPIC, value = {PageEvent.EVENT_TOPIC}),
-    @Property(name = "listener.disabled", boolValue = true),
+    @Property(name = "listener.disabled", boolValue = false),
     @Property(name = "solr.core", value = "collection1"),
-    @Property(name = "listener.paths", value = {""}, cardinality = Integer.MAX_VALUE)
+    @Property(name = "listener.paths", value = {"/content"}, cardinality = Integer.MAX_VALUE)
 })
 @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 public class SolrPageListener extends DefaultSolrSearchService implements EventHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SolrPageListener.class);
 	@Reference
 	private ResourceResolverFactory resolverFactory;
+	@Reference
+	private SolrConfigurationService solrConfigurationService;
 
     public void handleEvent(final Event event) {
 		if (disabled) return;
-		
-		SolrClient solr = getSolrClient(core);
-		
+
+		SolrClient solr = getSolrIndexClient();
+
 		PageEvent pageEvent = PageEvent.fromEvent(event);
 		if (pageEvent == null) return;
-		
+
 		ResourceResolver resourceResolver = null;
 		try {
 			resourceResolver = resolverFactory.getAdministrativeResourceResolver(null);
@@ -87,6 +90,7 @@ public class SolrPageListener extends DefaultSolrSearchService implements EventH
 	
 	protected void handlePageModification(PageModification mod, SolrClient solr, ResourceResolver resourceResolver) {
 		String pagePath = mod.getPath();
+			LOG.info("SolrPageListener +++++++++++++++++++ 2.  handlePageModification +++++++++++");
 		boolean isAllowedPath = false;
 		for (String basePath : basePaths)
 			isAllowedPath |= pagePath.startsWith(basePath);
@@ -101,12 +105,15 @@ public class SolrPageListener extends DefaultSolrSearchService implements EventH
 			case CREATED:
 			case MODIFIED:
 			case RESTORED:
+					LOG.info("SolrPageListener +++++++++++++++++++ switch.  CREATED +++++++++++");
 				addOrUpdatePage(pageRes, solr);
 				break;
 			case DELETED:
+					LOG.info("SolrPageListener +++++++++++++++++++ switch.  DELETED +++++++++++");
 				removePage(pagePath, solr);
 				break;
 			case MOVED:
+					LOG.info("SolrPageListener +++++++++++++++++++ switch.  MOVED +++++++++++");
 				removePage(pagePath, solr);
 				pageRes = resourceResolver.getResource(mod.getDestination());
 				addOrUpdatePage(pageRes, solr);
@@ -132,8 +139,8 @@ public class SolrPageListener extends DefaultSolrSearchService implements EventH
 		GeometrixxMediaContentType dataPage = GeometrixxMediaContentTypeFactory.getInstance(pageRes);
 		try {
 			LOG.info("Adding/updating page " + pageRes.getPath());
-			solr.add(dataPage.getSolrDoc());
-			solr.commit();
+			solr.add(core, dataPage.getSolrDoc());
+			solr.commit(core);
 		} catch (Exception e) {
 			LOG.error("Failure to add/update page " + pageRes.getPath(), e);
 		}
@@ -142,8 +149,8 @@ public class SolrPageListener extends DefaultSolrSearchService implements EventH
 	protected void removePage(String id, SolrClient solr) {
 		try {
 			LOG.info("Removing page " + id);
-			solr.deleteById(id);
-			solr.commit();
+			solr.deleteById(core, id);
+			solr.commit(core);
 		} catch (Exception e) {
 			LOG.error("Failure to remove page " + id, e);
 		}

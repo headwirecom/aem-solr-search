@@ -59,7 +59,7 @@ public class SolrQueryHandler extends SlingSafeMethodsServlet {
 
         JSONArray solrDocs = new JSONArray();
 
-        SolrClient solr = solrConfigurationService.getQueryingSolrClient();
+        SolrClient solr = getQueryingSolrClient();
 
         try {
 
@@ -74,4 +74,7 @@ public class SolrQueryHandler extends SlingSafeMethodsServlet {
 
     }
 
+    private SolrClient getQueryingSolrClient() {
+        return solrConfigurationService.getQueryingSolrClient();
+    }
 }

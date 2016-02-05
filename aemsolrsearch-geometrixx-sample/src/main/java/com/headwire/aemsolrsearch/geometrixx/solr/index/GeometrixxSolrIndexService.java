@@ -7,6 +7,7 @@ package com.headwire.aemsolrsearch.geometrixx.solr.index;
 
 import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import org.apache.felix.scr.annotations.*;
+import org.apache.solr.client.solrj.SolrClient;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,14 @@ public class GeometrixxSolrIndexService extends AbstractSolrIndexService {
     protected String getSolrServerURI(String solrCore) {
         assertSolrConfigService();
         return formatSolrEndPointAndCore(solrConfigService.getSolrEndPoint(), solrCore);
+    }
+
+    @Override protected SolrClient getSolrIndexClient() {
+        return solrConfigService.getIndexingSolrClient();
+    }
+
+    @Override protected SolrClient getSolrQueryClient() {
+        return solrConfigService.getQueryingSolrClient();
     }
 
 
