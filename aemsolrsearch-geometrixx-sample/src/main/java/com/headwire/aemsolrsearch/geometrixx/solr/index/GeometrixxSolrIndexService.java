@@ -76,7 +76,6 @@ public class GeometrixxSolrIndexService extends AbstractSolrIndexService {
 
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr index service using configuration: " + config);
-        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        
