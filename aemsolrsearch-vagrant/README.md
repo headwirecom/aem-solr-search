@@ -28,5 +28,5 @@ It provides two Solr nodes using an embedded ZooKeeper instance.
 
 4. Once the provisioning is done, you can access Solr:
 
-http://solrnode1:8983/solr
-http://solrnode2:7574/solr
+    * http://solrnode1:8983/solr
+    * http://solrnode2:7574/solr
