@@ -67,11 +67,13 @@ public class GeometrixxMediaSolrIndexService extends AbstractSolrIndexService {
 
     @Override
     protected SolrClient getSolrIndexClient() {
+        LOG.debug("Retrieving SolrClient for Indexing");
         return solrConfigService.getIndexingSolrClient();
     }
 
     @Override
     protected SolrClient getSolrQueryClient() {
+        LOG.debug("Retrieving SolrClient for Querying");
         return solrConfigService.getQueryingSolrClient();
     }
 

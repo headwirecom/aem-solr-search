@@ -54,7 +54,7 @@ import java.util.Map;
     @Property(name = Constants.SERVICE_VENDOR, value = "headwire.com, Inc."),
     @Property(name = Constants.SERVICE_DESCRIPTION, value = "Provides a service listening changes in pages to update solr each change"),
 	@Property(name = EventConstants.EVENT_TOPIC, value = {PageEvent.EVENT_TOPIC}),
-    @Property(name = "listener.disabled", boolValue = false),
+    @Property(name = "listener.disabled", boolValue = true),
     @Property(name = "solr.core", value = "collection1"),
     @Property(name = "listener.paths", value = {"/content"}, cardinality = Integer.MAX_VALUE)
 })

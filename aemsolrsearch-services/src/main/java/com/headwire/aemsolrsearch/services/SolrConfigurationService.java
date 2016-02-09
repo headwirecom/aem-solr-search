@@ -17,6 +17,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
+import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -28,93 +29,70 @@ import java.net.MalformedURLException;
 import java.util.*;
 
 @Component(
-        name = "com.headwire.aemsolrsearch.services.SolrConfigurationService",
-        label = "AEM Solr Search - Solr Configuration Service",
-        description = "A service for configuring Solr",
-        immediate = true,
-        metatype = true)
+    name = "com.headwire.aemsolrsearch.services.SolrConfigurationService",
+    label = "AEM Solr Search - Solr Configuration Service",
+    description = "A service for configuring Solr",
+    immediate = true,
+    metatype = true)
 @Service(SolrConfigurationService.class)
 @Properties({
-        @Property(
-                name = Constants.SERVICE_VENDOR,
-                value = "headwire.com, Inc."),
-        @Property(
-                name = Constants.SERVICE_DESCRIPTION,
-                value = "Solr configuration service"),
-        @Property(
-                name = SolrConfigurationServiceAdminConstants.PROTOCOL,
-                value = "http",
-                label = "Protocol",
-                description = "Either 'http' or 'https'"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SERVER_NAME,
-            value = "localhost",
-            label = "Server Name",
-            description = "Server name or IP address"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SERVER_PORT,
-            value = "8080",
-            label = "Server Port",
-            description = "Server port"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.CONTEXT_PATH,
-            value = "/solr",
-            label = "Context Path",
-            description = "Solr application context path"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.PROXY_ENABLED,
-            value = "true",
-            label = "Enable Proxy",
-            description = "Enable Proxy. Must be either 'true' or 'false'"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.PROXY_URL,
-            value = "http://localhost:4502/apps/solr/proxy",
-            label = "Proxy URL",
-                description = "Absolute proxy URL"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS,
-            value = { "/select", "/geometrixx-media-search" },
-            label = "Allowed request handlers",
-            description = "Whitelist of allowed request handlers"),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SOLR_MODE,
-            value = "Standalone",
-            options = {
-                @PropertyOption(name = "Standalone", value = "Standalone"),
-                @PropertyOption(name = "SolrCloud", value = "SolrCloud")
-            }
-        ),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SOLR_ZKHOST,
-            value = {"localhost:9983"},
-            label = "SOLR ZooKeeper Hosts",
-            description = "A comma delimited list of ZooKeeper hosts "
-                + "using the same format expected by CloudSolrClient"),
-
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SOLR_MASTER,
-            value = { "http://localhost:8888/solr)" },
-            label = "Master Server",
-            description = "This property is required for Solr mode = 'Standalone' only. "
-                + "The master Solr server is formatted as follows: <scheme>://<host>:<port>/<solr context>"
-                + " (i.e., http://solr1.example.com:8080/solr)."),
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.SOLR_SLAVES,
-            value = { "" },
-            label = "An optional set of zero or more Solr slave servers.",
-            description = "This property will be considered for Solr mode = 'Standalone' only. "
-                + "An optional set of zero or more Solr slave servers. "
-                + "Each Solr Slave is formatted as: <scheme>://<host>:<port>/<solr context> "
-                + "(i.e., http://solr2.example.com:8080/solr)."),
-
-        @Property(
-            name = SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES,
-            boolValue = false,
-            label = "Allowed Solr Master Queries",
-            description = "This property will be considered for Solr mode = 'Standalone'. "
-                + "A boolean flag indicating if the Solr master should receive queries. "
-                + "Default is false. If true, the master and slaves will both receive queries "
-                + "using Solr's software load balancer.")
+    @Property(
+        name = Constants.SERVICE_VENDOR,
+        value = "headwire.com, Inc."),
+    @Property(
+        name = Constants.SERVICE_DESCRIPTION,
+        value = "Solr configuration service"),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.PROXY_ENABLED,
+        value = "true",
+        label = "Enable Proxy",
+        description = "Enable Proxy. Must be either 'true' or 'false'"),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.PROXY_URL,
+        value = "http://localhost:4502/apps/solr/proxy",
+        label = "Proxy URL",
+        description = "Absolute proxy URL"),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS,
+        value = { "/select", "/geometrixx-media-search" },
+        label = "Allowed request handlers",
+        description = "Whitelist of allowed request handlers"),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.SOLR_MODE,
+        value = "Standalone",
+        options = {
+            @PropertyOption(name = "Standalone", value = "Standalone"),
+            @PropertyOption(name = "SolrCloud", value = "SolrCloud")
+        }
+    ),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.SOLR_ZKHOST,
+        value = {"localhost:9983"},
+        label = "SOLR ZooKeeper Hosts",
+        description = "A comma delimited list of ZooKeeper hosts "
+            + "using the same format expected by CloudSolrClient"),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.SOLR_MASTER,
+        value = { "http://localhost:8888/solr" },
+        label = "Master Server",
+        description = "The master Solr server is formatted as follows: <scheme>://<host>:<port>/<solr context>"
+            + " (i.e., http://solr1.example.com:8080/solr)."),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.SOLR_SLAVES,
+        value = { "" },
+        label = "An optional set of zero or more Solr slave servers.",
+        description = "This property will be considered for Solr mode = 'Standalone' only. "
+            + "An optional set of zero or more Solr slave servers. "
+            + "Each Solr Slave is formatted as: <scheme>://<host>:<port>/<solr context> "
+            + "(i.e., http://solr2.example.com:8080/solr)."),
+    @Property(
+        name = SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES,
+        boolValue = false,
+        label = "Allowed Solr Master Queries",
+        description = "This property will be considered for Solr mode = 'Standalone'. "
+            + "A boolean flag indicating if the Solr master should receive queries. "
+            + "Default is false. If true, the master and slaves will both receive queries "
+            + "using Solr's software load balancer.")
 })
 /**
  * SolrConfigurationService provides a services for setting and getting Solr configuration information.
@@ -123,10 +101,6 @@ public class SolrConfigurationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SolrConfigurationService.class);
     private String solrEndPoint;
-    private String protocol;
-    private String serverName;
-    private String serverPort;
-    private String contextPath;
     private String proxyUrl;
     private boolean proxyEnabled;
     private String[] allowedRequestHandlers;
@@ -136,14 +110,10 @@ public class SolrConfigurationService {
     private String solrSlaves;
     private boolean solrAllowMasterQueriesEnabled;
 
-    public static final String DEFAULT_PROTOCOL = "http";
-    public static final String DEFAULT_SERVER_NAME = "localhost";
-    public static final String DEFAULT_SERVER_PORT = "8993";
-    public static final String DEFAULT_CONTEXT_PATH = "/solr";
     public static final String DEFAULT_PROXY_URL = "http://localhost:4502/apps/solr/proxy";
     public static final String[] DEFAULT_ALLOWED_REQUEST_HANDLERS = new String[] { "/select", "/geometrixx-media-search" };
     public static final String DEFAULT_SOLR_MODE = "Standalone";
-    public static final String DEFAULT_SOLR_MASTER = "http://localhost:8888/solr)";
+    public static final String DEFAULT_SOLR_MASTER = "http://localhost:8888/solr";
     public static final String DEFAULT_SOLR_ZKHOST = "localhost:9983";
     public static final boolean DEFAULT_ALLOW_MASTER_QUERIES = false;
 
@@ -240,7 +210,7 @@ public class SolrConfigurationService {
 
             if (statusCode != HttpStatus.SC_OK) {
                 LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                        method.getStatusLine());
+                    method.getStatusLine());
             }
 
             // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
@@ -301,7 +271,7 @@ public class SolrConfigurationService {
 
             if (statusCode != HttpStatus.SC_OK) {
                 LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                        method.getStatusLine());
+                    method.getStatusLine());
             }
 
             // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
@@ -363,7 +333,7 @@ public class SolrConfigurationService {
 
             if (statusCode != HttpStatus.SC_OK) {
                 LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                        method.getStatusLine());
+                    method.getStatusLine());
             }
 
             // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
@@ -425,32 +395,24 @@ public class SolrConfigurationService {
     private synchronized void resetService(final Map<String, Object> config) {
         LOG.info("Resetting Solr configuration service using configuration: " + config);
 
-        protocol = config.containsKey(SolrConfigurationServiceAdminConstants.PROTOCOL) ?
-                (String)config.get(SolrConfigurationServiceAdminConstants.PROTOCOL) : DEFAULT_PROTOCOL;
-
-        serverName = config.containsKey(SolrConfigurationServiceAdminConstants.SERVER_NAME) ?
-                (String)config.get(SolrConfigurationServiceAdminConstants.SERVER_NAME) : DEFAULT_SERVER_NAME;
-
-        serverPort = config.containsKey(SolrConfigurationServiceAdminConstants.SERVER_PORT) ?
-                (String)config.get(SolrConfigurationServiceAdminConstants.SERVER_PORT) : DEFAULT_SERVER_PORT;
-
-        contextPath = config.containsKey(SolrConfigurationServiceAdminConstants.CONTEXT_PATH) ?
-                (String)config.get(SolrConfigurationServiceAdminConstants.CONTEXT_PATH) : DEFAULT_CONTEXT_PATH;
-
-        solrEndPoint = formatSolrEndPoint();
-
         proxyUrl = config.containsKey(SolrConfigurationServiceAdminConstants.PROXY_URL) ?
-                (String)config.get(SolrConfigurationServiceAdminConstants.PROXY_URL) : DEFAULT_PROXY_URL;
+            (String)config.get(SolrConfigurationServiceAdminConstants.PROXY_URL) : DEFAULT_PROXY_URL;
 
         proxyEnabled = config.containsKey(SolrConfigurationServiceAdminConstants.PROXY_ENABLED) ?
-                Boolean.parseBoolean((String)config.get(SolrConfigurationServiceAdminConstants.PROXY_ENABLED)) : true;
+            Boolean.parseBoolean((String)config.get(SolrConfigurationServiceAdminConstants.PROXY_ENABLED)) : true;
 
         allowedRequestHandlers = config.containsKey(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
-                ? (String[])config.get(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
-                : DEFAULT_ALLOWED_REQUEST_HANDLERS;
+            ? (String[])config.get(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
+            : DEFAULT_ALLOWED_REQUEST_HANDLERS;
         solrMode = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_MODE) ?
             (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_MODE) :
             DEFAULT_SOLR_MODE;
+
+        solrMaster = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_MASTER) ?
+            (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_MASTER) :
+            DEFAULT_SOLR_MASTER;
+
+        solrEndPoint = solrMaster;
 
         if (SOLR_MODE_SOLRCLOUD.equals(solrMode)) {
 
@@ -469,9 +431,6 @@ public class SolrConfigurationService {
     }
 
     private void configureMasterSlaveInt(Map<String, Object> config) {
-        solrMaster = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_MASTER) ?
-            (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_MASTER) :
-            DEFAULT_SOLR_MASTER;
 
         solrSlaves = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_SLAVES) ?
             (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_SLAVES) :
@@ -483,16 +442,6 @@ public class SolrConfigurationService {
                     .get(SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES) :
                 DEFAULT_ALLOW_MASTER_QUERIES;
 
-    }
-
-    private String formatSolrEndPoint() {
-
-        StringBuilder url = new StringBuilder();
-        url.append(protocol).append("://").append(serverName);
-        if (!"80".equals(serverPort)) url.append(":").append(serverPort);
-        url.append(contextPath);
-
-        return url.toString();
     }
 
     public SolrClient getIndexingSolrClient() {
@@ -511,7 +460,7 @@ public class SolrConfigurationService {
 
         final SolrClient existingSolrServer = solrClientByOperation.get(solrOperation);
         if (null != existingSolrServer) {
-            LOG.info("+++++++++++++ Returning existing instance of Solr Server {}", existingSolrServer);
+            LOG.info("Returning existing instance of Solr Server {} for operation {}", existingSolrServer, solrOperation);
             return existingSolrServer;
         } else {
             synchronized (solrClientByOperation) {
@@ -531,7 +480,7 @@ public class SolrConfigurationService {
 
                     }
                     solrClientByOperation.put(solrOperation, client);
-                    LOG.info("+++++++++++++ NEW instance of Solr Server {}", client);
+                    LOG.info("Returning NEW instance of Solr Server {} for operation {}", client, solrOperation);
                     return client;
                 }
             }
@@ -539,7 +488,10 @@ public class SolrConfigurationService {
     }
 
     private SolrClient getCloudSolrClient() {
-        return new CloudSolrClient(solrZKHost);
+        CloudSolrClient client =  new CloudSolrClient(solrZKHost);
+        client.setParser(new XMLResponseParser());
+
+        return client;
     }
 
     private SolrClient getStandaloneQuerySolrClient() {
@@ -571,6 +523,7 @@ public class SolrConfigurationService {
             LOG.error("Solr client initialization failed. {}", e);
         }
 
+        lbHttpSolrClient.setParser(new XMLResponseParser());
         return lbHttpSolrClient;
 
     }
@@ -585,8 +538,8 @@ public class SolrConfigurationService {
                 LOG.info("Solr client initialization failed. {}", e);
             }
         }
-        return new HttpSolrClient(solrMaster);
 
+        return  new HttpSolrClient(solrMaster, null, new XMLResponseParser());
     }
 
     public void clearSolrClient(){

@@ -62,7 +62,7 @@ public class SolrQueryHandler extends SlingSafeMethodsServlet {
         SolrClient solr = getQueryingSolrClient();
 
         try {
-
+            LOG.debug("Query using Solr Client {} and the solr core {}", solr, core);
             QueryResponse result = solr.query(core, new SolrQuery("*:*"));
             SolrDocumentList list=result.getResults();
             response.getWriter().write(list.toString());
