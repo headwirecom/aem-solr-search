@@ -488,6 +488,8 @@ public class SolrConfigurationService {
     }
 
     private SolrClient getCloudSolrClient() {
+
+        LOG.debug("Creating CloudSolrClient using solrMaster {}", solrMaster);
         CloudSolrClient client =  new CloudSolrClient(solrZKHost);
         client.setParser(new XMLResponseParser());
 
@@ -500,12 +502,18 @@ public class SolrConfigurationService {
 
         try {
             if (StringUtils.isEmpty(solrSlaves) && StringUtils.isNotEmpty(solrMaster)) {
+
+                LOG.debug("Creating LBHttpSolrClient using solrMaster {}", solrMaster);
                 lbHttpSolrClient = new LBHttpSolrClient(solrMaster);
 
             } else if (StringUtils.isNotEmpty(solrSlaves)) {
+
+                LOG.debug("Creating LBHttpSolrClient using solrSlaves {}", solrSlaves);
                 lbHttpSolrClient = new LBHttpSolrClient(solrSlaves);
 
                 if (solrAllowMasterQueriesEnabled && StringUtils.isNotEmpty(solrMaster)) {
+
+                    LOG.debug("Adding solrMaster {} to the LBHttpSolrClient", solrSlaves);
                     lbHttpSolrClient.addSolrServer(solrMaster);
                 }
 
@@ -539,6 +547,7 @@ public class SolrConfigurationService {
             }
         }
 
+        LOG.debug("Creating HttpSolrClient using solrMaster {}", solrMaster);
         return  new HttpSolrClient(solrMaster, null, new XMLResponseParser());
     }
 
