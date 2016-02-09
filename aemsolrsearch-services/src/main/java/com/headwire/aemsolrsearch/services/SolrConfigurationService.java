@@ -5,6 +5,7 @@
  */
 package com.headwire.aemsolrsearch.services;
 
+import com.headwire.aemsolrsearch.exception.AEMSolrSearchException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -12,6 +13,10 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
 import org.apache.felix.scr.annotations.Properties;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,6 +24,7 @@ import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.util.*;
 
 @Component(
@@ -47,7 +53,7 @@ import java.util.*;
             description = "Server name or IP address"),
         @Property(
             name = SolrConfigurationServiceAdminConstants.SERVER_PORT,
-            value = "8983",
+            value = "8080",
             label = "Server Port",
             description = "Server port"),
         @Property(
@@ -69,7 +75,46 @@ import java.util.*;
             name = SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS,
             value = { "/select", "/geometrixx-media-search" },
             label = "Allowed request handlers",
-            description = "Whitelist of allowed request handlers")
+            description = "Whitelist of allowed request handlers"),
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.SOLR_MODE,
+            value = "Standalone",
+            options = {
+                @PropertyOption(name = "Standalone", value = "Standalone"),
+                @PropertyOption(name = "SolrCloud", value = "SolrCloud")
+            }
+        ),
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.SOLR_ZKHOST,
+            value = {"localhost:9983"},
+            label = "SOLR ZooKeeper Hosts",
+            description = "A comma delimited list of ZooKeeper hosts "
+                + "using the same format expected by CloudSolrClient"),
+
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.SOLR_MASTER,
+            value = { "http://localhost:8888/solr)" },
+            label = "Master Server",
+            description = "This property is required for Solr mode = 'Standalone' only. "
+                + "The master Solr server is formatted as follows: <scheme>://<host>:<port>/<solr context>"
+                + " (i.e., http://solr1.example.com:8080/solr)."),
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.SOLR_SLAVES,
+            value = { "" },
+            label = "An optional set of zero or more Solr slave servers.",
+            description = "This property will be considered for Solr mode = 'Standalone' only. "
+                + "An optional set of zero or more Solr slave servers. "
+                + "Each Solr Slave is formatted as: <scheme>://<host>:<port>/<solr context> "
+                + "(i.e., http://solr2.example.com:8080/solr)."),
+
+        @Property(
+            name = SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES,
+            boolValue = false,
+            label = "Allowed Solr Master Queries",
+            description = "This property will be considered for Solr mode = 'Standalone'. "
+                + "A boolean flag indicating if the Solr master should receive queries. "
+                + "Default is false. If true, the master and slaves will both receive queries "
+                + "using Solr's software load balancer.")
 })
 /**
  * SolrConfigurationService provides a services for setting and getting Solr configuration information.
@@ -85,6 +130,11 @@ public class SolrConfigurationService {
     private String proxyUrl;
     private boolean proxyEnabled;
     private String[] allowedRequestHandlers;
+    private String solrMode;
+    private String solrZKHost;
+    private String solrMaster;
+    private String solrSlaves;
+    private boolean solrAllowMasterQueriesEnabled;
 
     public static final String DEFAULT_PROTOCOL = "http";
     public static final String DEFAULT_SERVER_NAME = "localhost";
@@ -92,6 +142,17 @@ public class SolrConfigurationService {
     public static final String DEFAULT_CONTEXT_PATH = "/solr";
     public static final String DEFAULT_PROXY_URL = "http://localhost:4502/apps/solr/proxy";
     public static final String[] DEFAULT_ALLOWED_REQUEST_HANDLERS = new String[] { "/select", "/geometrixx-media-search" };
+    public static final String DEFAULT_SOLR_MODE = "Standalone";
+    public static final String DEFAULT_SOLR_MASTER = "http://localhost:8888/solr)";
+    public static final String DEFAULT_SOLR_ZKHOST = "localhost:9983";
+    public static final boolean DEFAULT_ALLOW_MASTER_QUERIES = false;
+
+    public static final String SOLR_MODE_STANDALONE = "Standalone";
+    public static final String SOLR_MODE_SOLRCLOUD = "SolrCloud";
+
+    private static final Map<String, SolrClient> solrClientByOperation = new HashMap<String, SolrClient>();
+    public static final String SOLR_INDEX_OPERATION = "INDEX";
+    public static final String SOLR_QUERY_OPERATION = "QUERY";
 
     /**
      * Returns the Solr endpoint as a full URL.
@@ -387,6 +448,41 @@ public class SolrConfigurationService {
         allowedRequestHandlers = config.containsKey(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
                 ? (String[])config.get(SolrConfigurationServiceAdminConstants.ALLOWED_REQUEST_HANDLERS)
                 : DEFAULT_ALLOWED_REQUEST_HANDLERS;
+        solrMode = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_MODE) ?
+            (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_MODE) :
+            DEFAULT_SOLR_MODE;
+
+        if (SOLR_MODE_SOLRCLOUD.equals(solrMode)) {
+
+            solrZKHost = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_ZKHOST) ?
+                (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_ZKHOST) :
+                DEFAULT_SOLR_ZKHOST;
+        }
+
+        if (SOLR_MODE_STANDALONE.equals(solrMode)) {
+            //support MASTER/SLAVE
+            configureMasterSlaveInt(config);
+        }
+
+        clearSolrClient();
+
+    }
+
+    private void configureMasterSlaveInt(Map<String, Object> config) {
+        solrMaster = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_MASTER) ?
+            (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_MASTER) :
+            DEFAULT_SOLR_MASTER;
+
+        solrSlaves = config.containsKey(SolrConfigurationServiceAdminConstants.SOLR_SLAVES) ?
+            (String) config.get(SolrConfigurationServiceAdminConstants.SOLR_SLAVES) :
+            null;
+
+        solrAllowMasterQueriesEnabled =
+            config.containsKey(SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES) ?
+                (Boolean) config
+                    .get(SolrConfigurationServiceAdminConstants.ALLOWED_SOLR_MASTER_QUERIES) :
+                DEFAULT_ALLOW_MASTER_QUERIES;
+
     }
 
     private String formatSolrEndPoint() {
@@ -397,6 +493,104 @@ public class SolrConfigurationService {
         url.append(contextPath);
 
         return url.toString();
+    }
+
+    public SolrClient getIndexingSolrClient() {
+
+        return getSolrClient(SOLR_INDEX_OPERATION);
+
+    }
+
+    public SolrClient getQueryingSolrClient() {
+
+        return getSolrClient(SOLR_QUERY_OPERATION);
+    }
+
+    /** Retrieve a particular instance of SolrClient identified by the Operation. */
+    private SolrClient getSolrClient(String solrOperation) {
+
+        final SolrClient existingSolrServer = solrClientByOperation.get(solrOperation);
+        if (null != existingSolrServer) {
+            LOG.info("+++++++++++++ Returning existing instance of Solr Server {}", existingSolrServer);
+            return existingSolrServer;
+        } else {
+            synchronized (solrClientByOperation) {
+                // Double check existence while in synchronized block.
+                if (solrClientByOperation.containsKey(solrOperation)) {
+                    return solrClientByOperation.get(solrOperation);
+                } else {
+                    SolrClient client = null;
+                    if (SOLR_MODE_SOLRCLOUD.equals(solrMode)) {
+                        client = getCloudSolrClient();
+                    } else {
+                        if (SOLR_INDEX_OPERATION.equals(solrOperation)) {
+                            client = getStandaloneIndexSolrClient();
+                        } else if (SOLR_QUERY_OPERATION.equals(solrOperation)) {
+                            client = getStandaloneQuerySolrClient();
+                        }
+
+                    }
+                    solrClientByOperation.put(solrOperation, client);
+                    LOG.info("+++++++++++++ NEW instance of Solr Server {}", client);
+                    return client;
+                }
+            }
+        }
+    }
+
+    private SolrClient getCloudSolrClient() {
+        return new CloudSolrClient(solrZKHost);
+    }
+
+    private SolrClient getStandaloneQuerySolrClient() {
+
+        LBHttpSolrClient lbHttpSolrClient = null;
+
+        try {
+            if (StringUtils.isEmpty(solrSlaves) && StringUtils.isNotEmpty(solrMaster)) {
+                lbHttpSolrClient = new LBHttpSolrClient(solrMaster);
+
+            } else if (StringUtils.isNotEmpty(solrSlaves)) {
+                lbHttpSolrClient = new LBHttpSolrClient(solrSlaves);
+
+                if (solrAllowMasterQueriesEnabled && StringUtils.isNotEmpty(solrMaster)) {
+                    lbHttpSolrClient.addSolrServer(solrMaster);
+                }
+
+            } else if (StringUtils.isEmpty(solrSlaves) && StringUtils.isEmpty(solrMaster)) {
+                // unexpected
+                throw new AEMSolrSearchException("Initialization failed. "
+                    + "Either 'solr.master' or 'solr.slaves' properties are missing for Standalone mode.");
+
+            } else {
+                // Do nothing
+            }
+        } catch (MalformedURLException e) {
+            LOG.error("Error for malformed URL:  {}", e);
+        } catch (AEMSolrSearchException e) {
+            LOG.error("Solr client initialization failed. {}", e);
+        }
+
+        return lbHttpSolrClient;
+
+    }
+
+    private SolrClient getStandaloneIndexSolrClient() {
+
+        if (StringUtils.isEmpty(solrMaster)) {
+            try {
+                throw new AEMSolrSearchException(
+                    "Initialization failed. The property 'solr-master' is missing for Standalone mode.");
+            } catch (AEMSolrSearchException e) {
+                LOG.info("Solr client initialization failed. {}", e);
+            }
+        }
+        return new HttpSolrClient(solrMaster);
+
+    }
+
+    public void clearSolrClient(){
+        solrClientByOperation.clear();
     }
 
 }

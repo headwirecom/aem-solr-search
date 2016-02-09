@@ -23,11 +23,11 @@ public abstract class AbstractSolrSearchService extends AbstractSolrService {
      */
     public QueryResponse query(String solrCore, SolrQuery solrQuery)
             throws SolrServerException {
-    	SolrClient server = getSolrClient(solrCore);
+    	SolrClient server = getSolrQueryClient();
         LOG.info("Quering {} with '{}'", getSolrServerURI(solrCore), solrQuery);
         QueryResponse solrResponse;
 		try {
-			solrResponse = server.query(solrQuery);
+			solrResponse = server.query(solrCore, solrQuery);
 			return solrResponse;
 		} catch (IOException e) {
 			e.printStackTrace();
