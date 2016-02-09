@@ -55,7 +55,7 @@ import java.util.Map;
 	@Property(name = EventConstants.EVENT_TOPIC, value = {PageEvent.EVENT_TOPIC}),
     @Property(name = "listener.disabled", boolValue = true),
     @Property(name = "solr.core", value = "collection1"),
-    @Property(name = "listener.paths", value = {""}, cardinality = Integer.MAX_VALUE)
+    @Property(name = "listener.paths", value = {"/content"}, cardinality = Integer.MAX_VALUE)
 })
 @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
 public class SolrPageListener extends DefaultSolrSearchService implements EventHandler {
