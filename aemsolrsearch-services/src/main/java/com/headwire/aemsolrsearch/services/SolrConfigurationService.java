@@ -172,27 +172,28 @@ public class SolrConfigurationService {
     private List<String> fetchStandloneCores() {
 
         SolrClient client = getQueryingSolrClient();
+
         CoreAdminRequest request = new CoreAdminRequest();
         request.setAction(CoreAdminParams.CoreAdminAction.STATUS);
-        CoreAdminResponse cores = null;
+
+        List<String> coreList = new ArrayList<String>();
 
         try {
-            cores = request.process(client);
+            CoreAdminResponse cores = request.process(client);
+            // List of the cores
+            for (int i = 0; i < cores.getCoreStatus().size(); i++) {
+
+                LOG.debug("Fetched Core {} of Standalone Solr", cores.getCoreStatus().getName(i));
+
+                coreList.add(cores.getCoreStatus().getName(i));
+
+            }
 
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            LOG.error("Error fetching Standalone Solr Core {}", e);
 
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // List of the cores
-        List<String> coreList = new ArrayList<String>();
-        for (int i = 0; i < cores.getCoreStatus().size(); i++) {
-
-            LOG.debug("Fetched Core {} of Standalone Solr", cores.getCoreStatus().getName(i));
-
-            coreList.add(cores.getCoreStatus().getName(i));
-
+            LOG.error("Error fetching Standalone Solr Core {}", e);
         }
 
         return coreList;
