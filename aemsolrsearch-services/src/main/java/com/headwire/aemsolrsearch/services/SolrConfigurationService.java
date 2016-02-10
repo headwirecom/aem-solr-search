@@ -14,19 +14,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
+import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
-import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.CoreAdminResponse;
-import org.apache.solr.common.params.CollectionParams;
 import org.apache.solr.common.params.CoreAdminParams;
-import org.apache.solr.common.params.ModifiableSolrParams;
-import org.apache.solr.common.util.NamedList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -191,7 +188,11 @@ public class SolrConfigurationService {
         // List of the cores
         List<String> coreList = new ArrayList<String>();
         for (int i = 0; i < cores.getCoreStatus().size(); i++) {
+
+            LOG.debug("Fetched Core {} of Standalone Solr", cores.getCoreStatus().getName(i));
+
             coreList.add(cores.getCoreStatus().getName(i));
+
         }
 
         return coreList;
@@ -200,32 +201,27 @@ public class SolrConfigurationService {
     private List<String> fetchCloudCores() {
 
         SolrClient client = getQueryingSolrClient();
+        CollectionAdminRequest request = new CollectionAdminRequest.List();
         List<String> collections = null;
-        try {
-            ModifiableSolrParams params = new ModifiableSolrParams();
-            params.set("action", CollectionParams.CollectionAction.LIST.toString());
-            SolrRequest request = new QueryRequest(params);
-            request.setPath("/admin/collections");
-            NamedList<Object> rsp = null;
-            try {
-                rsp = client.request(request);
-                collections = (List<String>) rsp.get("collections");
-            } catch (SolrServerException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        } finally {
-            //remove collections
-            client = null;
+        try {
+            CollectionAdminResponse response = (CollectionAdminResponse) request.process(client);
+
+            if (response != null) {
+                collections = (List) response.getResponse().get("collections");
+                for (String collection : collections) {
+                    LOG.debug("Fetched Collection {} of Solr Cloud", collection);
+                }
+            }
+        } catch (SolrServerException e) {
+            LOG.error("Error fetching Cloud Cores {}", e);
+        } catch (IOException e) {
+            LOG.error("Error fetching Cloud Cores {}", e);
         }
 
         return collections;
 
     }
-
-
 
     /**
      * Returns all Solr fields that have <code>stored</code> set to <code>true</code>.
