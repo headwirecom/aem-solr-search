@@ -14,10 +14,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrRequest;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
+import org.apache.solr.client.solrj.request.CoreAdminRequest;
+import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.response.CoreAdminResponse;
+import org.apache.solr.common.params.CollectionParams;
+import org.apache.solr.common.params.CoreAdminParams;
+import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.common.util.NamedList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,6 +34,7 @@ import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -164,87 +174,55 @@ public class SolrConfigurationService {
 
     private List<String> fetchStandloneCores() {
 
-        List<String> cores = new ArrayList<String>();
-
-        HttpClient httpClient = new HttpClient();
-        HttpMethod method = new GetMethod(getSolrEndPoint() + "/admin/cores?action=STATUS&wt=json");
+        SolrClient client = getQueryingSolrClient();
+        CoreAdminRequest request = new CoreAdminRequest();
+        request.setAction(CoreAdminParams.CoreAdminAction.STATUS);
+        CoreAdminResponse cores = null;
 
         try {
-            int statusCode = httpClient.executeMethod(method);
+            cores = request.process(client);
 
-            if (statusCode != HttpStatus.SC_OK) {
-                LOG.error("Method failed: {}", method.getStatusLine());
-            }
+        } catch (SolrServerException e) {
+            e.printStackTrace();
 
-            // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
-            byte[] responseBody = method.getResponseBody();
-            String solrReponse = new String(responseBody);
-
-            JSONParser parser = new JSONParser();
-            Object jsonData = parser.parse(solrReponse);
-            JSONObject obj = (JSONObject) jsonData;
-
-            JSONObject coreStatus = (JSONObject) obj.get("status");
-            Set<String> coreNames = coreStatus.keySet();
-            for (String coreName : coreNames) {
-                cores.add(coreName);
-            }
-
-        } catch (Exception e) {
-            LOG.error("Error fetching Solr cores", e);
-        } finally {
-            method.releaseConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // List of the cores
+        List<String> coreList = new ArrayList<String>();
+        for (int i = 0; i < cores.getCoreStatus().size(); i++) {
+            coreList.add(cores.getCoreStatus().getName(i));
         }
 
-        return cores;
+        return coreList;
     }
 
-    /* Example of output JSON
-    {
-          "responseHeader":{
-            "status":0,
-            "QTime":2011},
-          "collections":["collection1",
-            "example1",
-            "example2"]}
-          }
-     */
     private List<String> fetchCloudCores() {
 
-        List<String> cores = new ArrayList<String>();
-
-        HttpClient httpClient = new HttpClient();
-
-        HttpMethod method =
-            new GetMethod(getSolrEndPoint() + "/admin/collections?action=LIST&wt=json");
-
+        SolrClient client = getQueryingSolrClient();
+        List<String> collections = null;
         try {
-            int statusCode = httpClient.executeMethod(method);
-
-            if (statusCode != HttpStatus.SC_OK) {
-                LOG.error("Method failed: {}", method.getStatusLine());
+            ModifiableSolrParams params = new ModifiableSolrParams();
+            params.set("action", CollectionParams.CollectionAction.LIST.toString());
+            SolrRequest request = new QueryRequest(params);
+            request.setPath("/admin/collections");
+            NamedList<Object> rsp = null;
+            try {
+                rsp = client.request(request);
+                collections = (List<String>) rsp.get("collections");
+            } catch (SolrServerException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            byte[] responseBody = method.getResponseBody();
-            String solrReponse = new String(responseBody);
-
-            JSONParser parser = new JSONParser();
-            Object jsonData = parser.parse(solrReponse);
-            JSONObject obj = (JSONObject) jsonData;
-
-            JSONArray coreArray = (JSONArray) obj.get("collections");
-
-            for (int i = 0; i < coreArray.size(); i++) {
-                cores.add(coreArray.get(i).toString());
-
-            }
-        } catch (Exception e) {
-            LOG.error("Error fetching Solr cores", e);
         } finally {
-            method.releaseConnection();
+            //remove collections
+            client = null;
         }
 
-        return cores;
+        return collections;
+
     }
 
 
