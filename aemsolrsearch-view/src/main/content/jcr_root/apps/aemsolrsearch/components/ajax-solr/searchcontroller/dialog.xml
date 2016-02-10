@@ -13,7 +13,7 @@
                 <items jcr:primaryType="cq:WidgetCollection">
                     <core
                             jcr:primaryType="cq:Widget"
-                            fieldLabel="Solr Core"
+                            fieldLabel="Solr Core / Collection"
                             name="./solr-core"
                             type="select"
                             options="/apps/solr/core"

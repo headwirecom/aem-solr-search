@@ -147,9 +147,25 @@ public class SolrConfigurationService {
      */
     public List<String> getCores() {
 
+        if (isStandaloneMode()) {
+
+            return fetchStandloneCores();
+
+        } else if (isCloudMode()) {
+
+            return fetchCloudCores();
+
+        } else {
+
+            return new ArrayList<String>();
+        }
+
+    }
+
+    private List<String> fetchStandloneCores() {
+
         List<String> cores = new ArrayList<String>();
 
-        // TODO: FogBugz #14 - Refactor HTTP implementation.
         HttpClient httpClient = new HttpClient();
         HttpMethod method = new GetMethod(getSolrEndPoint() + "/admin/cores?action=STATUS&wt=json");
 
@@ -168,9 +184,9 @@ public class SolrConfigurationService {
             Object jsonData = parser.parse(solrReponse);
             JSONObject obj = (JSONObject) jsonData;
 
-            JSONObject coreStatus = (JSONObject)obj.get("status");
+            JSONObject coreStatus = (JSONObject) obj.get("status");
             Set<String> coreNames = coreStatus.keySet();
-            for (String coreName: coreNames) {
+            for (String coreName : coreNames) {
                 cores.add(coreName);
             }
 
@@ -182,6 +198,56 @@ public class SolrConfigurationService {
 
         return cores;
     }
+
+    /* Example of output JSON
+    {
+          "responseHeader":{
+            "status":0,
+            "QTime":2011},
+          "collections":["collection1",
+            "example1",
+            "example2"]}
+          }
+     */
+    private List<String> fetchCloudCores() {
+
+        List<String> cores = new ArrayList<String>();
+
+        HttpClient httpClient = new HttpClient();
+
+        HttpMethod method =
+            new GetMethod(getSolrEndPoint() + "/admin/collections?action=LIST&wt=json");
+
+        try {
+            int statusCode = httpClient.executeMethod(method);
+
+            if (statusCode != HttpStatus.SC_OK) {
+                LOG.error("Method failed: {}", method.getStatusLine());
+            }
+
+            byte[] responseBody = method.getResponseBody();
+            String solrReponse = new String(responseBody);
+
+            JSONParser parser = new JSONParser();
+            Object jsonData = parser.parse(solrReponse);
+            JSONObject obj = (JSONObject) jsonData;
+
+            JSONArray coreArray = (JSONArray) obj.get("collections");
+
+            for (int i = 0; i < coreArray.size(); i++) {
+                cores.add(coreArray.get(i).toString());
+
+            }
+        } catch (Exception e) {
+            LOG.error("Error fetching Solr cores", e);
+        } finally {
+            method.releaseConnection();
+        }
+
+        return cores;
+    }
+
+
 
     /**
      * Returns all Solr fields that have <code>stored</code> set to <code>true</code>.
@@ -550,6 +616,27 @@ public class SolrConfigurationService {
         LOG.debug("Creating HttpSolrClient using solrMaster {}", solrMaster);
         return  new HttpSolrClient(solrMaster, null, new XMLResponseParser());
     }
+
+    private Boolean isCloudMode() {
+
+        boolean isCloud = false;
+        if (SOLR_MODE_SOLRCLOUD.equals(solrMode)) {
+            isCloud = true;
+        }
+
+        return isCloud;
+    }
+
+    private Boolean isStandaloneMode(){
+
+        boolean isStandalone = false;
+        if (SOLR_MODE_STANDALONE.equals(solrMode)) {
+            isStandalone = true;
+        }
+
+        return isStandalone;
+    }
+
 
     public void clearSolrClient(){
         solrClientByOperation.clear();
