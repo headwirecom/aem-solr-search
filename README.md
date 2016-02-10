@@ -6,7 +6,7 @@ AEM Solr Search provides an intergration between AEM (CQ) and Apache Solr. It in
 * SolrJ OSGi bundle
 * Suite of search UI components (i.e., facets, search input fields, pagination, etc.)
 * Server-side proxy
-* Quick start distribution of Apache Solr 4.9 (intended for development use only).
+* Quick start distribution of Apache Solr 4.10.4 (intended for development use only).
 * Geometrixx Media sample intergration with Solr.
 
 Note: This README uses Google Analytics for tracking site visits using: [![Analytics](https://ga-beacon.appspot.com/UA-72395016-2/headwirecom/aem-solr-search/readme)](https://github.com/igrigorik/ga-beacon)
@@ -29,11 +29,10 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 
         $ mvn clean install -Pauto-deploy-all
         
-3. Deploy Geometrixx Media sample and Geomextrixx Sample
+3. Deploy Geometrixx Media sample. 
 
         $ mvn install -Pauto-deploy-sample
         $ mvn install -Pauto-deploy-geo
-		$ mvn install -Pauto-deploy-geo-sample
 
 4. Start Jetty. This will take sometime the first time, as Solr will be fetched from a Maven repository.
 
@@ -44,12 +43,9 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 
         $ cd ../aemsolrsearch-geometrixx-media-sample
         $ ./index-geometrixx-media-articles.sh
-        $ cd ../aemsolrsearch-geometrixx-sample
-        $ ./index-geometrixx-content.sh 
 
 6. Open a browser and visit:
     * Sample Geometrixx Media Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search.html)
-	* Sample Geometrixx Search Page: [http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html](http://localhost:4502/content/aemsolrsearch/aem-solr-search-geo.html)
     * Solr: [http://localhost:8888/solr/](http://localhost:8888/solr/)
 
 
