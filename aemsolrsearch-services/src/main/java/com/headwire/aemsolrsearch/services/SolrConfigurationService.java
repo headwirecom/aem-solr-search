@@ -6,13 +6,8 @@
 package com.headwire.aemsolrsearch.services;
 
 import com.headwire.aemsolrsearch.exception.AEMSolrSearchException;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.*;
-import org.apache.felix.scr.annotations.Properties;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -21,19 +16,25 @@ import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
+import org.apache.solr.client.solrj.request.LukeRequest;
+import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.CoreAdminResponse;
+import org.apache.solr.client.solrj.response.LukeResponse;
+import org.apache.solr.client.solrj.response.schema.SchemaResponse;
+import org.apache.solr.common.luke.FieldFlag;
 import org.apache.solr.common.params.CoreAdminParams;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component(
     name = "com.headwire.aemsolrsearch.services.SolrConfigurationService",
@@ -127,7 +128,7 @@ public class SolrConfigurationService {
     public static final String SOLR_MODE_STANDALONE = "Standalone";
     public static final String SOLR_MODE_SOLRCLOUD = "SolrCloud";
 
-    private static final Map<String, SolrClient> solrClientByOperation = new HashMap<String, SolrClient>();
+    private static final Map<String, SolrClient> solrClientByOperation = new ConcurrentHashMap<String, SolrClient>();
     public static final String SOLR_INDEX_OPERATION = "INDEX";
     public static final String SOLR_QUERY_OPERATION = "QUERY";
 
@@ -190,10 +191,10 @@ public class SolrConfigurationService {
             }
 
         } catch (SolrServerException e) {
-            LOG.error("Error fetching Standalone Solr Core {}", e);
+            LOG.error("Error fetching Standalone Solr Core.", e);
 
         } catch (IOException e) {
-            LOG.error("Error fetching Standalone Solr Core {}", e);
+            LOG.error("Error fetching Standalone Solr Core.", e);
         }
 
         return coreList;
@@ -210,14 +211,17 @@ public class SolrConfigurationService {
 
             if (response != null) {
                 collections = (List) response.getResponse().get("collections");
-                for (String collection : collections) {
-                    LOG.debug("Fetched Collection {} of Solr Cloud", collection);
+
+                if (LOG.isDebugEnabled()) {
+                    for (String collection : collections) {
+                        LOG.debug("Fetched Collection '{}' of Solr Cloud", collection);
+                    }
                 }
             }
         } catch (SolrServerException e) {
-            LOG.error("Error fetching Cloud Cores {}", e);
+            LOG.error("Error fetching Cloud Cores.", e);
         } catch (IOException e) {
-            LOG.error("Error fetching Cloud Cores {}", e);
+            LOG.error("Error fetching Cloud Cores.", e);
         }
 
         return collections;
@@ -234,52 +238,30 @@ public class SolrConfigurationService {
 
         List<String> storedFields = new ArrayList<String>();
 
-        StringBuilder schemaFieldsEndPoint = new StringBuilder();
-        schemaFieldsEndPoint.append(getSolrEndPoint());
-        schemaFieldsEndPoint.append("/");
-        schemaFieldsEndPoint.append(solrCore);
-        schemaFieldsEndPoint.append("/schema/fields");
-
-        LOG.info("Looking up available stored fields {}", schemaFieldsEndPoint.toString());
-
-        // TODO: Avoid code duplication. Refactor. Create an HTTP utility class.
-        HttpClient httpClient = new HttpClient();
-        HttpMethod method = new GetMethod(schemaFieldsEndPoint.toString());
+        SolrClient solrClient = getQueryingSolrClient();
+        final SchemaRequest.Fields fieldsSchemaRequest = new SchemaRequest.Fields();
 
         try {
-            int statusCode = httpClient.executeMethod(method);
+            SchemaResponse.FieldsResponse fieldsResponse =
+                fieldsSchemaRequest.process(solrClient, solrCore);
 
-            if (statusCode != HttpStatus.SC_OK) {
-                LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                    method.getStatusLine());
-            }
+            List<Map<String, Object>> fields = fieldsResponse.getFields();
 
-            // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
-            byte[] responseBody = method.getResponseBody();
-            String solrReponse = new String(responseBody);
+            for (Map map : fields) {
 
-            JSONParser parser = new JSONParser();
-            Object jsonData = parser.parse(solrReponse);
-            JSONObject obj = (JSONObject) jsonData;
-
-            JSONArray schemaFields = (JSONArray)obj.get("fields");
-            Iterator fields = schemaFields.iterator();
-            while (fields.hasNext()) {
-                JSONObject facetField = (JSONObject)fields.next();
-                Boolean stored = (Boolean) facetField.get("stored");
-
-                if (stored) {
-                    String fieldName = (String)facetField.get("name");
-                    storedFields.add(fieldName);
+                if (map.containsKey("stored")) {
+                    Boolean stored = (Boolean) map.get("stored");
+                    if (stored) {
+                        String fieldName = (String) map.get("name");
+                        storedFields.add(fieldName);
+                    }
                 }
             }
 
-            LOG.info("Found stored fields [{}] for {}", storedFields, schemaFieldsEndPoint);
-
-        } catch (Exception e) {
-            LOG.error("Error fetching stored fields from {}", schemaFieldsEndPoint.toString(), e);
-        } finally {
-            method.releaseConnection();
+        } catch (SolrServerException e) {
+            LOG.error("Error fetching stored fields of schema '{}'. ", solrCore, e);
+        } catch (IOException e) {
+            LOG.error("Error fetching stored fields of schema '{}'. ", solrCore, e);
         }
 
         return storedFields;
@@ -294,53 +276,29 @@ public class SolrConfigurationService {
     public List<String> getIndexedFields(String solrCore) {
 
         List<String> availableIndexedFields = new ArrayList<String>();
-
-        StringBuilder schemaFieldsEndPoint = new StringBuilder();
-        schemaFieldsEndPoint.append(getSolrEndPoint());
-        schemaFieldsEndPoint.append("/");
-        schemaFieldsEndPoint.append(solrCore);
-        schemaFieldsEndPoint.append("/schema/fields");
-
-        LOG.info("Looking up available indexed fields {}", schemaFieldsEndPoint.toString());
-
-        // TODO: Avoid code duplication. Refactor. Create an HTTP utility class.
-        HttpClient httpClient = new HttpClient();
-        HttpMethod method = new GetMethod(schemaFieldsEndPoint.toString());
+        final SolrClient solrClient = getQueryingSolrClient();
+        final SchemaRequest.Fields fieldsSchemaRequest = new SchemaRequest.Fields();
 
         try {
-            int statusCode = httpClient.executeMethod(method);
+            SchemaResponse.FieldsResponse fieldsResponse =
+                fieldsSchemaRequest.process(solrClient, solrCore);
 
-            if (statusCode != HttpStatus.SC_OK) {
-                LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                    method.getStatusLine());
-            }
+            List<Map<String, Object>> fields = fieldsResponse.getFields();
 
-            // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
-            byte[] responseBody = method.getResponseBody();
-            String solrReponse = new String(responseBody);
-
-            JSONParser parser = new JSONParser();
-            Object jsonData = parser.parse(solrReponse);
-            JSONObject obj = (JSONObject) jsonData;
-
-            JSONArray schemaFields = (JSONArray)obj.get("fields");
-            Iterator facetFields = schemaFields.iterator();
-            while (facetFields.hasNext()) {
-                JSONObject facetField = (JSONObject)facetFields.next();
-                Boolean indexed = (Boolean) facetField.get("indexed");
-
-                if (indexed) {
-                    String fieldName = (String)facetField.get("name");
-                    availableIndexedFields.add(fieldName);
+            for (Map map : fields) {
+                if (map.containsKey("indexed")) {
+                    Boolean stored = (Boolean) map.get("indexed");
+                    if (stored) {
+                        String fieldName = (String) map.get("name");
+                        availableIndexedFields.add(fieldName);
+                    }
                 }
             }
 
-            LOG.info("Found indexed fields [{}] for {}", availableIndexedFields, schemaFieldsEndPoint);
-
-        } catch (Exception e) {
-            LOG.error("Error fetching available indexed fields from {}", schemaFieldsEndPoint.toString(), e);
-        } finally {
-            method.releaseConnection();
+        } catch (SolrServerException e) {
+            LOG.error("Error fetching indexed fields of schema '{}'.", solrCore, e);
+        } catch (IOException e) {
+            LOG.error("Error fetching indexed fields of schema '{}'. ", solrCore, e);
         }
 
         return availableIndexedFields;
@@ -357,57 +315,32 @@ public class SolrConfigurationService {
 
         List<String> availableIndexedFields = new ArrayList<String>();
 
-        StringBuilder schemaFieldsEndPoint = new StringBuilder();
-        schemaFieldsEndPoint.append(getSolrEndPoint());
-        schemaFieldsEndPoint.append("/");
-        schemaFieldsEndPoint.append(solrCore);
-        schemaFieldsEndPoint.append("/admin/luke?wt=json");
+        SolrClient solrClient = getQueryingSolrClient();
+        final LukeRequest request = new LukeRequest("/admin/luke");
+        request.setShowSchema(true);
 
-        LOG.info("Looking up available indexed fields using Luke: {}", schemaFieldsEndPoint.toString());
-
-        // TODO: Avoid code duplication. Refactor. Create an HTTP utility class.
-        HttpClient httpClient = new HttpClient();
-        HttpMethod method = new GetMethod(schemaFieldsEndPoint.toString());
+        LOG.info("Looking up available indexed fields using Luke");
 
         try {
-            int statusCode = httpClient.executeMethod(method);
 
-            if (statusCode != HttpStatus.SC_OK) {
-                LOG.error("RESTful call to {} failed: {}", schemaFieldsEndPoint.toString(),
-                    method.getStatusLine());
-            }
+            LukeResponse response = request.process(solrClient, solrCore);
+            Map<String, LukeResponse.FieldInfo> fields = response.getFieldInfo();
+            for (LukeResponse.FieldInfo field : fields.values()) {
+                Set<FieldFlag> indexFlags = field.getFlags();
 
-            // TODO: Need a more efficent way. Does this support UTF-8 encoding properly?
-            byte[] responseBody = method.getResponseBody();
-            String solrReponse = new String(responseBody);
+                if (indexFlags != null && indexFlags.contains(FieldFlag.INDEXED)) {
 
-            JSONParser parser = new JSONParser();
-            Object jsonData = parser.parse(solrReponse);
-            JSONObject obj = (JSONObject) jsonData;
-
-
-            JSONObject fields = (JSONObject)obj.get("fields");
-            Set<String> schemaFields = fields.keySet();
-            for (String fieldName: schemaFields) {
-                JSONObject field = (JSONObject)fields.get(fieldName);
-                // It seems that the output for Luke changed in Solr 4.6. "index" does not seem to be a reliable
-                // field to extract information about the field as there are instances where "(unstored field)" is
-                // defined. "schema" seems to be the preferred option.
-                String indexFlags = (String)field.get("schema");
-                if (indexFlags != null && indexFlags.indexOf("I") != -1) {
-                    LOG.debug("Found indexable field name: {}", fieldName);
-                    availableIndexedFields.add(fieldName.toString());
+                    availableIndexedFields.add(field.getName());
                 }
-
             }
 
-            LOG.info("Found indexed fields [{}] for {}", availableIndexedFields, schemaFieldsEndPoint);
-
-        } catch (Exception e) {
-            LOG.error("Error fetching available indexed fields from {}", schemaFieldsEndPoint.toString(), e);
-        } finally {
-            method.releaseConnection();
+        } catch (SolrServerException e) {
+            LOG.error("Error fetching indexed fields of schema '{}'. ", solrCore, e);
+        } catch (IOException e) {
+            LOG.error("Error fetching indexed fields of schema '{}'. ", solrCore, e);
         }
+
+        LOG.info("Found indexed fields [{}]", availableIndexedFields);
 
         return availableIndexedFields;
     }
@@ -501,7 +434,7 @@ public class SolrConfigurationService {
 
         final SolrClient existingSolrServer = solrClientByOperation.get(solrOperation);
         if (null != existingSolrServer) {
-            LOG.info("Returning existing instance of Solr Server {} for operation {}", existingSolrServer, solrOperation);
+            LOG.info("Returning existing instance of Solr Server {} for operation '{}'", existingSolrServer, solrOperation);
             return existingSolrServer;
         } else {
             synchronized (solrClientByOperation) {
@@ -520,8 +453,10 @@ public class SolrConfigurationService {
                         }
 
                     }
+
                     solrClientByOperation.put(solrOperation, client);
-                    LOG.info("Returning NEW instance of Solr Server {} for operation {}", client, solrOperation);
+
+                    LOG.info("Returning NEW instance of Solr Server {} for operation '{}'", client, solrOperation);
                     return client;
                 }
             }
@@ -530,7 +465,8 @@ public class SolrConfigurationService {
 
     private SolrClient getCloudSolrClient() {
 
-        LOG.debug("Creating CloudSolrClient using solrMaster {}", solrMaster);
+        LOG.debug("Creating CloudSolrClient using solrMaster '{}'", solrMaster);
+
         CloudSolrClient client =  new CloudSolrClient(solrZKHost);
         client.setParser(new XMLResponseParser());
 
@@ -567,9 +503,9 @@ public class SolrConfigurationService {
                 // Do nothing
             }
         } catch (MalformedURLException e) {
-            LOG.error("Error for malformed URL:  {}", e);
+            LOG.error("Error for malformed URL.", e);
         } catch (AEMSolrSearchException e) {
-            LOG.error("Solr client initialization failed. {}", e);
+            LOG.error("Solr client initialization failed.", e);
         }
 
         lbHttpSolrClient.setParser(new XMLResponseParser());
@@ -584,36 +520,37 @@ public class SolrConfigurationService {
                 throw new AEMSolrSearchException(
                     "Initialization failed. The property 'solr-master' is missing for Standalone mode.");
             } catch (AEMSolrSearchException e) {
-                LOG.info("Solr client initialization failed. {}", e);
+                LOG.error("Solr client initialization failed.", e);
             }
         }
 
-        LOG.debug("Creating HttpSolrClient using solrMaster {}", solrMaster);
+        LOG.debug("Creating HttpSolrClient using solrMaster '{}'", solrMaster);
         return  new HttpSolrClient(solrMaster, null, new XMLResponseParser());
     }
 
-    private Boolean isCloudMode() {
+    public Boolean isCloudMode() {
 
-        boolean isCloud = false;
-        if (SOLR_MODE_SOLRCLOUD.equals(solrMode)) {
-            isCloud = true;
-        }
+        return SOLR_MODE_SOLRCLOUD.equals(solrMode);
 
-        return isCloud;
     }
 
-    private Boolean isStandaloneMode(){
+    public Boolean isStandaloneMode() {
 
-        boolean isStandalone = false;
-        if (SOLR_MODE_STANDALONE.equals(solrMode)) {
-            isStandalone = true;
-        }
+        return SOLR_MODE_STANDALONE.equals(solrMode);
 
-        return isStandalone;
     }
 
 
-    public void clearSolrClient(){
+    public void clearSolrClient() {
+
+        for (SolrClient obj : solrClientByOperation.values()) {
+            try {
+                obj.close();
+            } catch (IOException e) {
+                LOG.error("Failed to close the Solr Client.", e);
+            }
+        }
+
         solrClientByOperation.clear();
     }
 
