@@ -316,7 +316,7 @@ public class SolrConfigurationService {
         List<String> availableIndexedFields = new ArrayList<String>();
 
         SolrClient solrClient = getQueryingSolrClient();
-        final LukeRequest request = new LukeRequest("/admin/luke");
+        final LukeRequest request = new LukeRequest();
         request.setShowSchema(true);
 
         LOG.info("Looking up available indexed fields using Luke");
@@ -525,7 +525,10 @@ public class SolrConfigurationService {
         }
 
         LOG.debug("Creating HttpSolrClient using solrMaster '{}'", solrMaster);
-        return  new HttpSolrClient(solrMaster, null, new XMLResponseParser());
+        HttpSolrClient client =  new HttpSolrClient(solrMaster);
+        client.setParser(new XMLResponseParser());
+
+        return client;
     }
 
     public Boolean isCloudMode() {
