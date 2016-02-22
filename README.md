@@ -32,6 +32,7 @@ These instructions assume that AEM (CQ) is running on localhost on port 4502 wit
 3. Deploy Geometrixx Media sample. 
 
         $ mvn install -Pauto-deploy-geo
+        $ mvn install -Pauto-deploy-sample
 
 4. Start Jetty. This will take sometime the first time, as Solr will be fetched from a Maven repository.
 
