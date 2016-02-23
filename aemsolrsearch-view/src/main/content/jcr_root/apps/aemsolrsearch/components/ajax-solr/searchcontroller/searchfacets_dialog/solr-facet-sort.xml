@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Widget"
+    defaultValue="count"
+    fieldDescription="Select 'Count' to sort by document hits, and select 'Index' to sort by facet value."
+    fieldLabel="Facet Sort Order"
+    name="./solr-facet-sort"
+    optionsProvider="CQSearch.controller.provideFacetSortOptions"
+    type="select"
+    xtype="selection"/>

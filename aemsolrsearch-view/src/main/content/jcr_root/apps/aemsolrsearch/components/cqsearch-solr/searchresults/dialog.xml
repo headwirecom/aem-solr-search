@@ -9,9 +9,8 @@
         <items jcr:primaryType="cq:WidgetCollection">
             <tab1
                 jcr:primaryType="cq:Panel"
-                title="Search Results"
                 html="The Search Results component is not configurable here. Edit the Search Controller component"
-                />
+                title="Search Results"/>
         </items>
     </items>
 </jcr:root>

@@ -1,117 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-          jcr:primaryType="cq:Dialog"
-          title="Search Results"
-          xtype="dialog">
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Dialog"
+    title="Search Results"
+    xtype="dialog">
     <items
-            jcr:primaryType="cq:Widget"
-            xtype="tabpanel">
+        jcr:primaryType="cq:Widget"
+        xtype="tabpanel">
         <items jcr:primaryType="cq:WidgetCollection">
             <general
-                    jcr:primaryType="cq:Panel"
-                    title="General">
+                jcr:primaryType="cq:Panel"
+                title="General">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <core
-                            jcr:primaryType="cq:Widget"
-                            fieldLabel="Solr Core / Collection"
-                            name="./solr-core"
-                            type="select"
-                            options="/apps/solr/core"
-                            xtype="selection"
-                            >
+                        jcr:primaryType="cq:Widget"
+                        fieldLabel="Solr Core / Collection"
+                        name="./solr-core"
+                        options="/apps/solr/core"
+                        type="select"
+                        xtype="selection">
                         <listeners
-                                jcr:primaryType="nt:unstructured"
-                                loadcontent="function(field,record,path){CQSearch.controller.solrHealthCheck(field);}"
-                                selectionchanged="function(field,value){CQSearch.controller.updateSolrOptions(field);}"/>
+                            jcr:primaryType="nt:unstructured"
+                            loadcontent="function(field,record,path){CQSearch.controller.solrHealthCheck(field);}"
+                            selectionchanged="function(field,value){CQSearch.controller.updateSolrOptions(field);}"/>
                     </core>
                 </items>
             </general>
             <pagination
-                    jcr:primaryType="cq:Panel"
-                    title="Pagination">
+                jcr:primaryType="cq:Panel"
+                title="Pagination">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <pagination
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchpagination_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchpagination_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </pagination>
             <results
-                    jcr:primaryType="cq:Panel"
-                    title="Results">
+                jcr:primaryType="cq:Panel"
+                title="Results">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <results
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchresults_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchresults_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </results>
             <noresults
-                    jcr:primaryType="cq:Panel"
-                    title="No Results">
+                jcr:primaryType="cq:Panel"
+                title="No Results">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <results
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchnoresults_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchnoresults_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </noresults>
             <facets
-                    jcr:primaryType="cq:Panel"
-                    title="Facets">
+                jcr:primaryType="cq:Panel"
+                title="Facets">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <facets
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchfacets_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchfacets_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </facets>
             <input
-                    jcr:primaryType="cq:Panel"
-                    title="Input">
+                jcr:primaryType="cq:Panel"
+                title="Input">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <input
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchinput_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchinput_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </input>
             <breadbox
-                    jcr:primaryType="cq:Panel"
-                    title="Breadbox">
+                jcr:primaryType="cq:Panel"
+                title="Breadbox">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <breadbox
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchbreadbox_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/searchbreadbox_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </breadbox>
             <hithighlighting
-                    jcr:primaryType="cq:Panel"
-                    title="Hit Highlighting">
+                jcr:primaryType="cq:Panel"
+                title="Hit Highlighting">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <breadbox
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/hithighlighting_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/hithighlighting_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </hithighlighting>
             <advanced
-                    jcr:primaryType="cq:Panel"
-                    title="Advanced">
+                jcr:primaryType="cq:Panel"
+                title="Advanced">
                 <items jcr:primaryType="cq:WidgetCollection">
                     <breadbox
-                            jcr:primaryType="cq:Widget"
-                            xtype="cqinclude"
-                            path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/advanced_dialog.infinity.json"
-                            />
+                        jcr:primaryType="cq:Widget"
+                        path="/apps/aemsolrsearch/components/ajax-solr/searchcontroller/advanced_dialog.infinity.json"
+                        xtype="cqinclude"/>
                 </items>
             </advanced>
         </items>

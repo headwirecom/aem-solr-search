@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="Search Results"
+    sling:resourceType="cq/gui/components/authoring/dialog">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/foundation/container">
+        <layout
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/foundation/layouts/tabs"
+            type="nav"/>
+        <items jcr:primaryType="nt:unstructured">
+            <general
+                jcr:primaryType="nt:unstructured"
+                jcr:title="General"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <core
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/select"
+                                fieldLabel="Solr Core / Collection"
+                                name="./solr-core">
+                                <items jcr:primaryType="nt:unstructured"/>
+                            </core>
+                        </items>
+                    </columns>
+                </items>
+            </general>
+            <pagination
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Pagination"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./pagination-enable"
+                                text="Enable Pagination"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./pagination-enable@Delete"
+                                value="{Boolean}true"/>
+                            <pagination-prev-label
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Previous Label"
+                                name="./pagination-prev-label"/>
+                            <pagination-next-label
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Next Label"
+                                name="./pagination-next-label"/>
+                            <pagination-id
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML ID"
+                                name="./pagination-id"/>
+                            <pagination-target
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML Target"
+                                name="./pagination-target"/>
+                        </items>
+                    </columns>
+                </items>
+            </pagination>
+            <results
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Results"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./results-enable"
+                                text="Enable Search Results"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./results-enable@Delete"
+                                value="{Boolean}true"/>
+                            <results-per-page
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Results Per Page"
+                                name="./results-per-page"/>
+                            <results-id
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML ID"
+                                name="./results-id"/>
+                            <results-target
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML Target"
+                                name="./results-target"/>
+                            <available-fields
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./solr-result-fields"
+                                text="Available Result Fields"/>
+                            <available-fields-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./solr-result-fields@Delete"
+                                value="{Boolean}true"/>
+                        </items>
+                    </columns>
+                </items>
+            </results>
+            <noresults
+                jcr:primaryType="nt:unstructured"
+                jcr:title="No Results"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./no-results-enable"
+                                text="Enable Search No Results"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./no-results-enable@Delete"
+                                value="{Boolean}true"/>
+                            <no-results-id
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML ID"
+                                name="./no-results-id"/>
+                            <no-results-target
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML Target"
+                                name="./no-results-target"/>
+                            <no-results-parsys
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
+                                fieldLabel="Parsys Include"
+                                name="./no-results-parsys"/>
+                        </items>
+                    </columns>
+                </items>
+            </noresults>
+            <facets
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Facets"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./facets-enable"
+                                text="Enable Search Facets"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./facets-enable@Delete"
+                                value="{Boolean}true"/>
+                            <solr-facet-sort
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/select"
+                                fieldDescription="Select 'Count' to sort by document hits, and select 'Index' to sort by facet value."
+                                fieldLabel="Facet Sort Order"
+                                name="./solr-facet-sort"
+                                value="count">
+                                <items jcr:primaryType="nt:unstructured"/>
+                            </solr-facet-sort>
+                            <available-facets
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/multifield"
+                                fieldLabel="Available Facet Fields">
+                                <field/>
+                            </available-facets>
+                            <show-more-label
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Show More Label"
+                                name="./solr-facet-show-more"/>
+                            <show-less-label
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Show Less Label"
+                                name="./solr-facet-show-less"/>
+                            <show-num-facets
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Number of Facets to Show"
+                                name="./solr-facet-show-num-facets"/>
+                        </items>
+                    </columns>
+                </items>
+            </facets>
+            <input
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Input"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./input-enable"
+                                text="Enable Search Input"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./input-enable@Delete"
+                                value="{Boolean}true"/>
+                            <input-id
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML ID"
+                                name="./input-id"/>
+                            <input-target
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML Target"
+                                name="./input-target"/>
+                        </items>
+                    </columns>
+                </items>
+            </input>
+            <breadbox
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Breadbox"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./breadbox-enable"
+                                text="Enable Search Breadbox"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./breadbox-enable@Delete"
+                                value="{Boolean}true"/>
+                            <breadbox-id
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML ID"
+                                name="./breadbox-id"/>
+                            <breadbox-target
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="HTML Target"
+                                name="./breadbox-target"/>
+                        </items>
+                    </columns>
+                </items>
+            </breadbox>
+            <hithighlighting
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Hit Highlighting"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <enable
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                name="./highlighting-enable"
+                                text="Enable Hit Highlighting"/>
+                            <enable-delete
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                name="./highlighting-enable@Delete"
+                                value="{Boolean}true"/>
+                            <highlight-pre
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Simple Fomatter - Pre"
+                                name="./highlighting-pre"/>
+                            <highlight-post
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Simple Fomatter - Post"
+                                name="./highlighting-post"/>
+                            <highlighting-snippets
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Number of Snippets"
+                                name="./highlighting-snippets"/>
+                            <highlighting-fragsize
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                fieldLabel="Fragement Size"
+                                name="./highlighting-fragsize"/>
+                            <highlight-fields
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/form/multifield"
+                                fieldLabel="Available Fields">
+                                <field
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/foundation/form/select"
+                                    name="./highlighting-fields">
+                                    <items jcr:primaryType="nt:unstructured"/>
+                                </field>
+                            </highlight-fields>
+                        </items>
+                    </columns>
+                </items>
+            </hithighlighting>
+            <advanced
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Advanced"
+                sling:resourceType="granite/ui/components/foundation/container">
+                <layout
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/layouts/fixedcolumns"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <columns
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <filter-query-settings
+                                jcr:primaryType="nt:unstructured"
+                                jcr:title="Filter Queries"
+                                sling:resourceType="granite/ui/components/foundation/form/fieldset"
+                                title="Filter Queries">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <filter-queries-in-breadbox
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/checkbox"
+                                        fieldDescription="Click 'Allow in breadbox', if you would like filter queries to appear in the breadbox."
+                                        name="./solr-filter-queries-in-breadbox-enabled"
+                                        text="Allow in breadbox"/>
+                                    <filter-queries-in-breadbox-delete
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                        name="./solr-filter-queries-in-breadbox-enabled@Delete"
+                                        value="{Boolean}true"/>
+                                    <filter-queries
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/multifield"
+                                        fieldDescription="Filter queries allow you to restrict the scope of the result set. The format is field:value (e.g., doctype:pdf)."
+                                        fieldLabel="Filter queries">
+                                        <field
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/form/textfield"/>
+                                    </filter-queries>
+                                    <search-handler
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/textfield"
+                                        fieldLabel="Search Handler"
+                                        name="./search-handler"/>
+                                </items>
+                            </filter-query-settings>
+                        </items>
+                    </columns>
+                </items>
+            </advanced>
+        </items>
+    </content>
+</jcr:root>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-          cq:actions="[text:Search Statistics,-,edit,annotate,copymove,insert,delete]"
-          cq:layout="editbar"
-          jcr:primaryType="cq:EditConfig">
+    cq:actions="[text:Search Statistics,-,edit,annotate,copymove,insert,delete]"
+    cq:layout="editbar"
+    jcr:primaryType="cq:EditConfig">
     <cq:listeners
-            jcr:primaryType="cq:EditListenersConfig"
-            afterdelete="REFRESH_PAGE"
-            afteredit="REFRESH_PAGE"
-            afterinsert="REFRESH_PAGE"
-            afterMove="REFRESH_PAGE"/>
+        jcr:primaryType="cq:EditListenersConfig"
+        afterdelete="REFRESH_PAGE"
+        afteredit="REFRESH_PAGE"
+        afterinsert="REFRESH_PAGE"
+        afterMove="REFRESH_PAGE"/>
 </jcr:root>
