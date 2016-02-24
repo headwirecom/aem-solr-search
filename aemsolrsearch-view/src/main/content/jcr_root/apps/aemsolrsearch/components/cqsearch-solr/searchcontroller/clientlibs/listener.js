@@ -2,22 +2,29 @@
 (function ($, $document) {
     "use strict";
 
-    var CORE = "./solr-core", AVAIL_FIELDS = "./";
+    var CORE = "./solr-core", AVAILFIELDS = "./solrfields";
 
     function getCore() {
-        //get the country widget
-        var core = new CUI.Select({
-            element: $("[name='" + CORE + "']").closest(".coral-Select")
-        });
+
+        var core = $('select[name="' + CORE + '"]').val();
 
         return core;
-    };
+    }
 
 
-    function pullStoredFields(core){
+    function collectionFieldsData() {
 
-        //
-        return getSearchResultOptions(core);
+        var storedFields = {};
+        var core = getCore();
+
+        if(_.isEmpty(core)){
+            return;
+        }
+
+        storedFields = getSearchResultOptions(core);
+
+
+        //TODO: UPDATE SEARCH AVAILABLE FIELDS
 
     }
 
@@ -45,11 +52,9 @@
     };
 
 
-
-    //http://docs.adobe.com/docs/en/aem/6-0/develop/ref/granite-ui/api/index.html
     $document.on("dialog-ready", function() {
-  //      $(window).adaptTo("foundation-ui").alert("Open", "Dialog now open, event [dialog-ready]");
 
+        collectionFieldsData();
 
     });
 
@@ -68,7 +73,7 @@
     });
 
     $document.on("dialog-closed", function() {
-      //  $(window).adaptTo("foundation-ui").alert("Close", "Dialog closed, event [dialog-closed]");
+        //  $(window).adaptTo("foundation-ui").alert("Close", "Dialog closed, event [dialog-closed]");
     });
 
 
