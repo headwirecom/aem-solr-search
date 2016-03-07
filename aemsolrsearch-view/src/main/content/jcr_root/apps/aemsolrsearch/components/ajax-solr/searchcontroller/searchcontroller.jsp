@@ -10,7 +10,9 @@
         <script type="text/javascript">
         var Manager;
 
-        (function ($) {
+        (function ($, Granite) {
+
+         if(Granite.author){} else {
 
           $(function () {
             Manager = new AjaxSolr.Manager({
@@ -90,7 +92,7 @@
                 Manager.doRequest();
               });
 
-            })(jQuery);
+         }    })(jQuery, Granite);
         </script>
 
         <c:choose>
