@@ -1,9 +1,9 @@
 package com.headwire.aemsolrsearch.geometrixxmedia.servlets;
 
-import com.day.cq.wcm.api.NameConstants;
 import com.day.cq.dam.api.DamConstants;
-import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentType;
+import com.day.cq.wcm.api.NameConstants;
 import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentTypeFactory;
+import com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaContentType;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;

@@ -1,4 +1,4 @@
-package com.headwire.aemsolrsearch.geometrixxmedia.adapters;
+package com.headwire.aemsolrsearch.geometrixxmedia.model;
 
 import org.apache.solr.common.SolrInputDocument;
 import org.json.simple.JSONObject;

@@ -96,6 +96,18 @@
             <version>3.1.4</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Dependencies with Sling Models -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.models.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- JCR -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -158,6 +170,7 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -169,7 +182,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>com.headwire.aemsolrsearch.geometrixxmedia.osgi.Activator</Bundle-Activator>
-                        <Import-Package>*</Import-Package>
+                        <Import-Package>!org.apache.log,!org.apache.avalon.framework.logger,*</Import-Package>
+                        <Sling-Model-Packages>
+                            com.headwire.aemsolrsearch.geometrixxmedia.model
+                        </Sling-Model-Packages>
+                        <Require-Bundle>org.apache.sling.models.api</Require-Bundle>
                     </instructions>
                 </configuration>
             </plugin>

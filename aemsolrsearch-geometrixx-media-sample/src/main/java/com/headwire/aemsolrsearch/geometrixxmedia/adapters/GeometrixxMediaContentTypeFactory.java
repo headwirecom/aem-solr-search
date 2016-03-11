@@ -1,12 +1,13 @@
 package com.headwire.aemsolrsearch.geometrixxmedia.adapters;
 
+import com.headwire.aemsolrsearch.geometrixxmedia.model.*;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A factory for creating {@link com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentType}
+ * A factory for creating {@link com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaContentType}
  * instances.
  *
  * @author <a href="mailto:gg@headwire.com">Gaston Gonzalez</a>

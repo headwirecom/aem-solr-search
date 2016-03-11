@@ -1,5 +1,6 @@
 package com.headwire.aemsolrsearch.geometrixxmedia.adapters;
 
+import com.headwire.aemsolrsearch.geometrixxmedia.model.*;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
@@ -50,11 +51,11 @@ public class GeometrixxMediaAdapterFactory implements  AdapterFactory {
 
         try {
             if (adapterType == ARTICLE_CLASS) {
-                return (AdapterType) GeometrixxMediaArticlePage.adaptFromResource(resource);
+                return (AdapterType) resource.adaptTo(GeometrixxMediaArticlePage.class);
             } else if (adapterType == MEDIA_ARTICLE_CLASS) {
-                return (AdapterType) GeometrixxMediaArticleBody.adaptFromResource(resource);
+                return (AdapterType) resource.adaptTo(GeometrixxMediaArticleBody.class);
             } else if (adapterType == AUTHOR_SUMMARY_CLASS) {
-                return (AdapterType) GeometrixxMediaAuthorSummary.adaptFromResource(resource);
+                return (AdapterType) resource.adaptTo(GeometrixxMediaAuthorSummary.class);
             }
 
         } catch (Exception e) {
