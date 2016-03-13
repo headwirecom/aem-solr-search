@@ -3,8 +3,8 @@ package com.headwire.aemsolrsearch.geometrixxmedia.solr.index;
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.wcm.api.PageEvent;
 import com.day.cq.wcm.api.PageModification;
-import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentTypeFactory;
 import com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaContentType;
+import com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaPage;
 import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.event.Event;
@@ -171,7 +171,7 @@ public class DefaultSolrIndexListenerService implements EventHandler {
             return;
         }
 
-        GeometrixxMediaContentType contentPage = GeometrixxMediaContentTypeFactory.getInstance(resource);
+        GeometrixxMediaContentType contentPage = resource.adaptTo(GeometrixxMediaPage.class);
 
         indexService.addAndCommit(contentPage.getSolrDoc());
     }

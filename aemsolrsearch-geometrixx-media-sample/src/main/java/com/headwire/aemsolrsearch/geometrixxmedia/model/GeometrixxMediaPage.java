@@ -14,27 +14,27 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Data model representing a Geometrixx Media Article page.
+ * Sling model representing a Geometrixx Media Page.
  *
- * @author <a href="mailto:gg@headwire.com">Gaston Gonzalez</a>
  */
-@Model(adaptables = Resource.class)
-public class GeometrixxMediaArticlePage extends GeometrixxMediaContentType {
+@Model(adaptables = Resource.class, adapters = {GeometrixxMediaContentType.class, GeometrixxMediaPage.class})
+public class GeometrixxMediaPage implements GeometrixxMediaContentType{
 
-    private static final Logger LOG = LoggerFactory.getLogger(GeometrixxMediaArticlePage.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GeometrixxMediaPage.class);
 
-    private GeometrixxMediaArticlePageContent articlePageContent;
+    private GeometrixxMediaPageContent pageContent;
 
     @Inject @Named("jcr:content")
     private Resource jcrResource;
 
-    @PostConstruct public void init() throws SlingModelsException {
+    @PostConstruct
+    public void init() throws SlingModelsException {
 
-        articlePageContent = jcrResource.adaptTo(GeometrixxMediaArticlePageContent.class);
+        pageContent = jcrResource.adaptTo(GeometrixxMediaPageContent.class);
 
     }
 
-    public GeometrixxMediaArticlePage(Resource resource) throws SlingModelsException {
+    public GeometrixxMediaPage(Resource resource) throws SlingModelsException {
 
         if (null == resource) {
             LOG.debug("resource is null");
@@ -49,23 +49,26 @@ public class GeometrixxMediaArticlePage extends GeometrixxMediaContentType {
 
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
 
-        final StringBuilder sb = new StringBuilder("GeometrixxMediaArticlePage{");
-        if(null != articlePageContent){
-            sb.append(articlePageContent.toString());
+        final StringBuilder sb = new StringBuilder("GeometrixxMediaPage{");
+        if(null != pageContent){
+            sb.append(pageContent.toString());
         }
         sb.append('}');
         return sb.toString();
     }
 
-    @Override public JSONObject getJson() {
+    @Override
+    public JSONObject getJson() {
 
-        return articlePageContent != null ? articlePageContent.getJson() : null;
+        return pageContent != null ? pageContent.getJson() : new JSONObject();
     }
 
-    @Override public SolrInputDocument getSolrDoc() {
+    @Override
+    public SolrInputDocument getSolrDoc() {
 
-        return articlePageContent != null ? articlePageContent.getSolrDoc() : null;
+        return pageContent != null ? pageContent.getSolrDoc() : null;
     }
 }

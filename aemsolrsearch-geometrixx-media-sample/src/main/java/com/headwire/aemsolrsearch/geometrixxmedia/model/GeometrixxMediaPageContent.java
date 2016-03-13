@@ -24,10 +24,10 @@ import java.util.Date;
 import static com.headwire.aemsolrsearch.geometrixxmedia.solr.GeometrixxMediaSchema.*;
 
 @Model(adaptables = Resource.class)
-public class GeometrixxMediaArticlePageContent {
+public class GeometrixxMediaPageContent {
 
     private static final Logger LOG =
-        LoggerFactory.getLogger(GeometrixxMediaArticlePageContent.class);
+        LoggerFactory.getLogger(GeometrixxMediaPageContent.class);
 
     private GeometrixxMediaAuthorSummary author;
 
@@ -37,16 +37,16 @@ public class GeometrixxMediaArticlePageContent {
 
     private String url;
 
-    @Inject @Named("jcr:description") @Default(values = "")
+    @Inject @Named("jcr:description") @Default
     private String description;
 
     @Inject @Named("sling:resourceType")
     private String slingResourceType;
 
-    @Inject @Named("jcr:title") @Default(values = "")
+    @Inject @Named("jcr:title") @Default
     private String title;
 
-    @Inject @Named("author-summary/articleAuthor") @Default(values = "")
+    @Inject @Named("author-summary/articleAuthor") @Default
     private String authorRef;
 
     @Inject @Named("article-content-par/article/fileReference") @Optional
@@ -80,7 +80,7 @@ public class GeometrixxMediaArticlePageContent {
 
     }
 
-    public GeometrixxMediaArticlePageContent(Resource resource) {
+    public GeometrixxMediaPageContent(Resource resource) {
         this.resource = resource;
     }
 
