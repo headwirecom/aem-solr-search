@@ -17,8 +17,8 @@ package com.headwire.aemsolrsearch.geometrixx.listeners;
 
 import com.day.cq.wcm.api.PageEvent;
 import com.day.cq.wcm.api.PageModification;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentType;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentTypeFactory;
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxContentType;
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxPage;
 import com.headwire.aemsolrsearch.search.services.DefaultSolrSearchService;
 import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import org.apache.felix.scr.annotations.*;
@@ -133,7 +133,7 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 			LOG.error("Page does not exist to add/update in solr");
 			return;
 		}
-		GeometrixxContentType dataPage = GeometrixxContentTypeFactory.getInstance(pageRes);
+    GeometrixxContentType dataPage = pageRes.adaptTo(GeometrixxPage.class);
 		try {
 			LOG.info("Adding/updating page " + pageRes.getPath());
 			solr.add(core, dataPage.getSolrDoc());
