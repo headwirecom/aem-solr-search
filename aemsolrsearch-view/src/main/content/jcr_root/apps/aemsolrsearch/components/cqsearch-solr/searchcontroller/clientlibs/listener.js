@@ -1,7 +1,10 @@
 (function ($, $document) {
     "use strict";
 
-    var CORE = "./solr-core", RESULT_FIELDS = "./solr-result-fields", HIGHLIGHT_FIELDS = "./highlighting-fields";
+    var CORE = "./solr-core",
+        RESULT_FIELDS = "./solr-result-fields",
+        HIGHLIGHT_FIELDS = "./highlighting-fields", storedFields = {};
+
 
     function adjustLayoutHeight() {
         $(".coral-FixedColumn-column").css("height", "20rem");
@@ -34,58 +37,32 @@
         addDataToFields(coreSelect.getValue());
 
         function addDataToFields(coreName) {
-            updateCoreRelatedFields(coreName)
+
+            storedFields = getSearchResultOptions(event.selectedValue);
+            updateCoreRelatedFields()
 
         }
 
         //listener on coreSelect select for dynamically filling the related Fields
         coreSelect._selectList.on('selected.select', function (event) {
-            updateCoreRelatedFields(event.selected);
+
+            if (_.isEmpty(event.selectedValue)) {
+                console.log('coreName is empty');
+                return;
+            }
+
+            storedFields = getSearchResultOptions(event.selectedValue);
+            updateCoreRelatedFields();
         });
 
     });
 
-    function updateCoreRelatedFields(coreName) {
+    function updateCoreRelatedFields() {
         // It will update all the dependent fields based on the coreName
-        var storedFields = {};
-
-        if (_.isEmpty(coreName)) {
-            return;
-        }
-
-        storedFields = getSearchResultOptions(coreName);
-
         updateHightlightFields(storedFields);
         updateResultFields(storedFields);
-        updateFacetOptions(coreName);
 
     }
-
-    function updateFacetOptions(coreName) {
-        var facetOptions = '[]';
-        facetOptions = getFacetOptions(coreName);
-
-
-    }
-
-
-    function getFacetOptions(coreName) {
-
-        var facetOptions = '[]';
-
-        // Note: We need a blocking call, otherwise this method may return before the
-        // data is received.
-        $.ajax({
-            url: "/apps/solr/schema/fields/indexed",
-            data: {core: coreName},
-            async: false
-        }).done(function (data) {
-            facetOptions = data;
-            console.log("Available Facets:" + JSON.stringify(data));
-        });
-
-        return facetOptions;
-    };
 
     function updateHightlightFields(storedFields) {
 

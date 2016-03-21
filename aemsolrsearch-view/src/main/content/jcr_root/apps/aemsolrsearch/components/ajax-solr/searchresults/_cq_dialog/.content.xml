@@ -12,7 +12,6 @@
                 sling:resourceType="granite/ui/components/foundation/layouts/tabs"
                 type="nav"/>
         <items jcr:primaryType="nt:unstructured">
-
             <tab
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Search Results"

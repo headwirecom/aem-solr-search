@@ -67,6 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
         description = "Whitelist of allowed request handlers"),
     @Property(
         name = SolrConfigurationServiceAdminConstants.SOLR_MODE,
+        label = "Solr Mode",
         value = "Standalone",
         options = {
             @PropertyOption(name = "Standalone", value = "Standalone"),

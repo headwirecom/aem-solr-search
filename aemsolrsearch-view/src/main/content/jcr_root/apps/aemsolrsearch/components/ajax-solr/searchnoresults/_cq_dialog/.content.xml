@@ -2,7 +2,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
           xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
           jcr:primaryType="nt:unstructured"
-          jcr:title="Search Results"
+          jcr:title="No Search Results"
           sling:resourceType="cq/gui/components/authoring/dialog">
     <content
             jcr:primaryType="nt:unstructured"
@@ -12,12 +12,12 @@
                 sling:resourceType="granite/ui/components/foundation/layouts/tabs"
                 type="nav"/>
         <items jcr:primaryType="nt:unstructured">
-
             <tab
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Search Results"
+                    jcr:title="No Search Results"
                     sling:resourceType="granite/ui/components/foundation/text"
-                    text="The Search Results component is not configurable here. Edit the Search Controller component"/>
+                    text="The No Search Results component is not configurable here. Edit the Search Controller component"/>
+
         </items>
     </content>
 </jcr:root>
