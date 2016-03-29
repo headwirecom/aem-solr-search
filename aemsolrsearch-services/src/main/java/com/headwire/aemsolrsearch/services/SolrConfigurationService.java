@@ -171,6 +171,10 @@ public class SolrConfigurationService {
 
     }
 
+    public List<String> fetchCollectionShards() {
+        return fetchStandloneCores();
+    }
+
     private List<String> fetchStandloneCores() {
 
         SolrClient client = getQueryingSolrClient();
@@ -466,7 +470,7 @@ public class SolrConfigurationService {
 
     private SolrClient getCloudSolrClient() {
 
-        LOG.debug("Creating CloudSolrClient using solrMaster '{}'", solrMaster);
+        LOG.debug("Creating CloudSolrClient using ZooKeeper: '{}'", solrZKHost);
 
         CloudSolrClient client =  new CloudSolrClient(solrZKHost);
         client.setParser(new XMLResponseParser());
@@ -549,6 +553,7 @@ public class SolrConfigurationService {
 
         for (SolrClient obj : solrClientByOperation.values()) {
             try {
+                LOG.info("Releasing SolrClient: '{}'", obj.getClass().getName());
                 obj.close();
             } catch (IOException e) {
                 LOG.error("Failed to close the Solr Client.", e);

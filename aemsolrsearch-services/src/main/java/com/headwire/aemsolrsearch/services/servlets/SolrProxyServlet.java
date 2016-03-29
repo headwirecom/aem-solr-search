@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 @Component(
@@ -56,9 +57,28 @@ public class SolrProxyServlet extends ProxyServlet {
     @Override
     public String getTargetURI(SlingHttpServletRequest request) {
 
-        String searchHandler = (request.getParameter("qt") != null) ? request.getParameter("qt") : "/select";
-        return solrConfigurationService.getSolrEndPoint() + "/" +
-                request.getParameter(CORE_NAME_PARAM) + searchHandler;
+        final String searchHandler = (request.getParameter("qt") != null) ? request.getParameter("qt") : "/select";
+        final String logicalCoreName = request.getParameter(CORE_NAME_PARAM);
+
+        String core = logicalCoreName;
+
+        // If we are in SolrCloud mode we just need to grab the first shard that matches the logical core name.
+        if (solrConfigurationService.isCloudMode()) {
+            List<String> shards = solrConfigurationService.fetchCollectionShards();
+            for (String shard: shards) {
+                if (shard.startsWith(logicalCoreName)) {
+                    core = shard;
+                    break;
+                }
+            }
+        }
+
+        // TODO: When in SolrCloud mode dynamically find and active node
+
+        final String targetUri = solrConfigurationService.getSolrEndPoint() + "/" + core + searchHandler;
+
+        LOG.debug("Using '{}' for proxy search", targetUri);
+        return targetUri;
     }
 
     @Override
