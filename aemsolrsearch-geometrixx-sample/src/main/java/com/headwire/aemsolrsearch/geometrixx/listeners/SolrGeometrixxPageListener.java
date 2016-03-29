@@ -17,9 +17,10 @@ package com.headwire.aemsolrsearch.geometrixx.listeners;
 
 import com.day.cq.wcm.api.PageEvent;
 import com.day.cq.wcm.api.PageModification;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentType;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentTypeFactory;
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxContentType;
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxPage;
 import com.headwire.aemsolrsearch.search.services.DefaultSolrSearchService;
+import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -63,11 +64,14 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 	@Reference
 	private ResourceResolverFactory resolverFactory;
 
+	@Reference
+	private SolrConfigurationService solrConfigurationService;
+
     public void handleEvent(final Event event) {
 		if (disabled) return;
-		
-		SolrClient solr = getSolrClient(core);
-		
+
+		SolrClient solr = getSolrIndexClient();
+
 		PageEvent pageEvent = PageEvent.fromEvent(event);
 		if (pageEvent == null) return;
 		
@@ -129,11 +133,11 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 			LOG.error("Page does not exist to add/update in solr");
 			return;
 		}
-		GeometrixxContentType dataPage = GeometrixxContentTypeFactory.getInstance(pageRes);
+    GeometrixxContentType dataPage = pageRes.adaptTo(GeometrixxPage.class);
 		try {
 			LOG.info("Adding/updating page " + pageRes.getPath());
-			solr.add(dataPage.getSolrDoc());
-			solr.commit();
+			solr.add(core, dataPage.getSolrDoc());
+			solr.commit(core);
 		} catch (Exception e) {
 			LOG.error("Failure to add/update page " + pageRes.getPath(), e);
 		}
@@ -142,8 +146,8 @@ public class SolrGeometrixxPageListener extends DefaultSolrSearchService impleme
 	protected void removePage(String id, SolrClient solr) {
 		try {
 			LOG.info("Removing page " + id);
-			solr.deleteById(id);
-			solr.commit();
+			solr.deleteById(core, id);
+			solr.commit(core);
 		} catch (Exception e) {
 			LOG.error("Failure to remove page " + id, e);
 		}

@@ -9,6 +9,7 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.solr.client.solrj.SolrClient;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,10 +62,19 @@ public class DefaultSolrSearchService extends AbstractSolrSearchService {
         assertSolrConfigService();
         return formatSolrEndPointAndCore(solrConfigService.getSolrEndPoint(), solrCore);
     }
-    
+
+    @Override
+    protected SolrClient getSolrIndexClient() {
+        return solrConfigService.getIndexingSolrClient();
+    }
+
+    @Override
+    protected SolrClient getSolrQueryClient() {
+        return solrConfigService.getQueryingSolrClient();
+    }
+
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr search service using configuration: " + config);
-        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        

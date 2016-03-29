@@ -7,6 +7,7 @@ package com.headwire.aemsolrsearch.geometrixxmedia.solr.index;
 
 import com.headwire.aemsolrsearch.services.SolrConfigurationService;
 import org.apache.felix.scr.annotations.*;
+import org.apache.solr.client.solrj.SolrClient;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,10 +65,20 @@ public class GeometrixxMediaSolrIndexService extends AbstractSolrIndexService {
         return formatSolrEndPointAndCore(solrConfigService.getSolrEndPoint(), solrCore);
     }
 
+    @Override
+    protected SolrClient getSolrIndexClient() {
+        LOG.debug("Retrieving SolrClient for Indexing");
+        return solrConfigService.getIndexingSolrClient();
+    }
+
+    @Override
+    protected SolrClient getSolrQueryClient() {
+        LOG.debug("Retrieving SolrClient for Querying");
+        return solrConfigService.getQueryingSolrClient();
+    }
 
     private void resetService(final Map<String, String> config) {
         LOG.info("Resetting Solr index service using configuration: " + config);
-        resetSolrClients();
     }
     
     private void assertSolrConfigService() throws IllegalStateException {        

@@ -27,4 +27,15 @@ public class SolrConfigurationServiceAdminConstants {
     public static final String PROXY_URL = "solr.proxy.url";
     /** Allowed request handlers. */
     public static final String ALLOWED_REQUEST_HANDLERS = "solr.proxy.allowed.handlers";
+    /** Solr Mode. */
+    public static final String SOLR_MODE = "solr.mode";
+    /** Solr ZooKeeper host. */
+    public static final String SOLR_ZKHOST = "solr.zkhost";
+    /** Solr Master. */
+    public static final String SOLR_MASTER = "solr.master";
+    /** Solr Slaves. */
+    public static final String SOLR_SLAVES = "solr.slaves";
+    /** Solr Allow Master Queries. */
+    public static final String ALLOWED_SOLR_MASTER_QUERIES = "solr.allow.master.queries";
+
 }

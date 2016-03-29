@@ -8,34 +8,37 @@
 <%-- This allows to branch login on author mode --%>
 <cqsearch:wcmMode />
 
-<cqsearch:solrSearch 
-    var="solrSearch"
-    varResults="results"
-    solrCoreName="${properties['solr-core']}"
-    query="${(inputEnabled and not empty param.q) ? param.q : '*:*'}"
-    filterQueries="${(facetsEnabled and not empty param.fq) 
-        ? paramValues.fq 
+<%-- This allows to use author ui mode --%>
+<cqsearch:authoringUIMode />
+
+<cqsearch:solrSearch
+        var="solrSearch"
+        varResults="results"
+        solrCoreName="${properties['solr-core']}"
+        query="${(inputEnabled and not empty param.q) ? param.q : '*:*'}"
+        filterQueries="${(facetsEnabled and not empty param.fq)
+        ? paramValues.fq
         : (facetsEnabled and advancedFilterQueriesEnabled and advancedFilterQueriesInBreadboxEnabled)
-            ? advancedFilterQueries 
+            ? advancedFilterQueries
             : null}"
-    advancedFilterQueries="${(advancedFilterQueriesEnabled and not advancedFilterQueriesInBreadboxEnabled) ? advancedFilterQueries : null}"
-    start="${(empty param.start) ? 0 : param.start}"
-    rows="${resultsPerPage}"
-    fieldNames="${resultsAvailableFields}"
-    facetEnabled="${facetsEnabled}"
-    facetSort="${facetsFacetSort}"
-    facetFieldNames="${facetsAvailableFacetKeys}"
-    facetLimit="20"
-    facetMinCount="1"
-    highlightEnabled="${highlightingEnabled}"
-    highlightRequireFieldMatchEnabled="false"
-    highlightSimplePre="${highlightingPre}"
-    highlightSimplePost="${highlightingPost}"
-    highlightNumberSnippets="${highlightingSnippets}"
-    highlightFragsize="${highlightingFragSize}"
-    highlightingFields="${highlightingFields}"
-    searchHandler="${searchHandler}"
-/>
+        advancedFilterQueries="${(advancedFilterQueriesEnabled and not advancedFilterQueriesInBreadboxEnabled) ? advancedFilterQueries : null}"
+        start="${(empty param.start) ? 0 : param.start}"
+        rows="${resultsPerPage}"
+        fieldNames="${resultsAvailableFields}"
+        facetEnabled="${facetsEnabled}"
+        facetSort="${facetsFacetSort}"
+        facetFieldNames="${facetsAvailableFacetKeys}"
+        facetLimit="20"
+        facetMinCount="1"
+        highlightEnabled="${highlightingEnabled}"
+        highlightRequireFieldMatchEnabled="false"
+        highlightSimplePre="${highlightingPre}"
+        highlightSimplePost="${highlightingPost}"
+        highlightNumberSnippets="${highlightingSnippets}"
+        highlightFragsize="${highlightingFragSize}"
+        highlightingFields="${highlightingFields}"
+        searchHandler="${searchHandler}"
+        />
 <%-- Make the results available through the request to the other components. --%>
 <c:set var="solrSearchResults" value="${results}" scope="request"/>
 
@@ -46,7 +49,7 @@
         <c:if test="${facetsEnabled}">
             <c:forEach var="filterQuery" items="${solrSearch.filterQueries}">
                 <c:if test="${not empty filterQuery}">
-                     <input type="hidden" name="fq" value="${filterQuery}">
+                    <input type="hidden" name="fq" value="${filterQuery}">
                 </c:if>
             </c:forEach>
         </c:if>
@@ -59,10 +62,15 @@
     });
 </script>
 
+<c:if test="${wcmAuthor && touchMode}">
+    Edit the Search Controller.
+</c:if>
+
 <c:choose>
-  <c:when test="${wcmAuthor}">
-    <%-- Libs needed for setting the available fields while in author mode. --%>
-    <cq:includeClientLib js="ajax-solr,ajax-solr-dialog" />
-    <cq:includeClientLib css="ajax-solr,ajax-solr-dialog" />
-  </c:when>
+
+    <c:when test="${wcmAuthor && classicMode}">
+        <%-- Libs needed for setting the available fields while in author mode. --%>
+        <cq:includeClientLib js="ajax-solr,ajax-solr-dialog" />
+        <cq:includeClientLib css="ajax-solr,ajax-solr-dialog" />
+    </c:when>
 </c:choose>

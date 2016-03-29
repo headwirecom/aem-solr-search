@@ -9,9 +9,8 @@
         <items jcr:primaryType="cq:WidgetCollection">
             <tab1
                 jcr:primaryType="cq:Panel"
-                title="Search Pagination"
                 html="The Search Pagination component is not configurable here. Edit the Search Controller component"
-                />
+                title="Search Pagination"/>
         </items>
     </items>
 </jcr:root>

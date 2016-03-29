@@ -5,9 +5,8 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentType;
-import com.headwire.aemsolrsearch.geometrixx.adapters.GeometrixxContentTypeFactory;
-
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxContentType;
+import com.headwire.aemsolrsearch.geometrixx.model.GeometrixxPage;
 import org.apache.felix.scr.annotations.*;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -110,7 +109,8 @@ public class SolrBulkUpdateHandler extends SlingSafeMethodsServlet {
 
                 // The query returns the jcr:content node, so we need its parent.
                 Resource page = hit.getResource().getParent();
-                GeometrixxContentType contentType = GeometrixxContentTypeFactory.getInstance(page);
+
+                GeometrixxContentType contentType = page.adaptTo(GeometrixxPage.class);
 
                 if (contentType != null) {
                     solrDocs.add(contentType.getJson());

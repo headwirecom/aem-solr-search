@@ -1,15 +1,16 @@
 package com.headwire.aemsolrsearch.geometrixxmedia.servlets;
 
-import com.day.cq.wcm.api.NameConstants;
 import com.day.cq.dam.api.DamConstants;
-import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentType;
-import com.headwire.aemsolrsearch.geometrixxmedia.adapters.GeometrixxMediaContentTypeFactory;
+import com.day.cq.wcm.api.NameConstants;
+import com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaContentType;
+import com.headwire.aemsolrsearch.geometrixxmedia.model.GeometrixxMediaPage;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
@@ -52,10 +53,8 @@ public class SolrUpdateHandler extends SlingSafeMethodsServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        GeometrixxMediaContentType contentType = GeometrixxMediaContentTypeFactory.getInstance(request.getResource());
-        if (null == contentType) {
-            contentType = GeometrixxMediaContentType.NULL;
-        }
+        Resource page = request.getResource();
+        GeometrixxMediaContentType contentType = page.adaptTo(GeometrixxMediaPage.class);
 
         response.getWriter().write(contentType.getJson().toJSONString());
     }
