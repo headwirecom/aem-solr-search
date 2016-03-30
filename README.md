@@ -74,7 +74,7 @@ If you would like to try Solr 5 in SolrCloud mode, perform the following:
    `solr.mode` to _SolrCloud_ and set `solr.master` to one of the nodes in the cluster (i.e., `http://localhost:8983/solr`). 
    Currently, the proxy does not detect the set of active nodes in Zookeeper.
    
-4. Trigger a real-time index by creating a Geometrixx Media Article page or by running:
+4. Trigger a real-time index by creating a Geometrixx Media Article page or run a full index as follows:
 
         $ cd aemsolrsearch-geometrixx-media-sample
         $ ./index-geometrixx-media-articles-solrcloud.sh
