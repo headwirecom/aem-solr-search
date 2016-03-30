@@ -3,13 +3,16 @@ About AEM Solr Search
 
 AEM Solr Search provides an intergration between AEM (CQ) and Apache Solr. It includes the following features:
 
-* SolrJ OSGi bundle
-* Suite of search UI components (i.e., facets, search input fields, pagination, etc.)
-* Server-side proxy
-* Quick start distribution of Apache Solr 4.10.4 (intended for development use only).
-* Geometrixx Media sample intergration with Solr.
+* SolrJ OSGi bundle - `aemsolrsearch-solrj`
+* Suite of search UI components (e.g., facets, search input fields, pagination, etc.)
+* Server-side query proxy
+* Quick start Solr distributions for development use
+    * Apache Solr 4.10.4 - `aemsolrsearch-quickstart`
+    * Apache Solr 5.4.1 - `aemsolrsearch-vagrant`
+* Geometrixx Media sample integration.
 
 Note: This README uses Google Analytics for tracking site visits using: [![Analytics](https://ga-beacon.appspot.com/UA-72395016-2/headwirecom/aem-solr-search/readme)](https://github.com/igrigorik/ga-beacon)
+
 
 Requirements
 ------------
@@ -18,14 +21,15 @@ Requirements
 * Adobe AEM 6.1 or greater (with the Geometrixx Media Site)
 * Maven 3.2.x
 
+
 Getting Started
 ---------------
 
 These instructions assume that AEM is running on localhost on port 4502 with the default admin/admin credentials.
 
-1. Start AEM/CQ.
+1. Start AEM.
 
-2. Deploy AEM Solr Search by running the following from the root project.
+2. Deploy AEM Solr Search by running the following from the root project. This will deploy the core AEM Solr Search application framework.
 
         $ mvn clean install -Pauto-deploy-all
         
