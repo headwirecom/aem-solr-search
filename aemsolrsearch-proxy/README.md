@@ -73,7 +73,7 @@ Run Solr Proxy
         GET http://localhost:8899/solrproxy?corename=collection1&qt=/select&q=*    
 
 
-2. Or to build this proxy and run on some other application server, then you the following command:
+2. Or if you want to build this proxy application and run on some other application server, then use the following command:
 
          $ mvn clean package
          
