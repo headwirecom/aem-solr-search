@@ -38,22 +38,16 @@ Set up the following configurations inside resources/application.properties file
 5. If using the Solr Cloud mode, then configure the following:        
 
         solr.cloud.mode=true
-
-6. If using the Solr Cloud mode, then configure the zookeeper configuration:         
-
-        solr.zkHost=localhost:8983
-        
-   NOTE: The zkHost has no /solr handler.     
-        
-7. For HTTP Requests, configure the http connection timeout        
+           
+6. For HTTP Requests, configure the http connection timeout        
 
         http.connection.timeout=1000
         
-8. For HTTP Requests, configure the http socket timeout
+7. For HTTP Requests, configure the http socket timeout
          
          http.socket.timeout=1000
 
-9. Enter the Available Server port, where you want to run this Solr Proxy
+8. Enter the Available Server port, where you want to run this Solr Proxy
 
         server.port=8899
 
