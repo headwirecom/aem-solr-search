@@ -1,19 +1,3 @@
-/*
- * Copyright 2012-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.headwire.aemsolrsearch.proxy.controller;
 
 import com.headwire.aemsolrsearch.proxy.service.SolrProxyService;
@@ -41,9 +25,6 @@ public class SolrProxyController extends ProxyController {
     @Value("${solr.endpoint.url}")
     private String solrEndPoint;
 
-    @Value("${solr.core}")
-    private String solrCore;
-
     @Autowired
     private SolrProxyService solrProxyService;
 
@@ -53,16 +34,22 @@ public class SolrProxyController extends ProxyController {
             (request.getParameter("qt") != null) ? request.getParameter("qt") : "/select";
         final String logicalCoreName = request.getParameter(CORE_NAME_PARAM);
 
-        String core = StringUtils.isEmpty(logicalCoreName) ? solrCore : logicalCoreName;
+        if(StringUtils.isEmpty(logicalCoreName)){
+            LOG.info("The request missing the required Solr core name.");
+        }
 
-        if(solrProxyService.isCloudMode()){
+        String core = "";
+        if (solrProxyService.isCloudMode()) {
             List<String> shards = solrProxyService.fetchCollectionShards();
-            for (String shard: shards) {
+            for (String shard : shards) {
                 if (shard.startsWith(logicalCoreName)) {
                     core = shard;
                     break;
                 }
             }
+        } else {
+
+            core = logicalCoreName;
         }
 
         final String targetUri = solrEndPoint + "/" + core + searchHandler;

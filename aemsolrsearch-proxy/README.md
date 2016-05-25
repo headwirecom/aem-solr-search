@@ -23,31 +23,27 @@ Set up the following configurations inside resources/application.properties file
     
     For example in my case, it is 'http://localhost:8983/solr'
 
-2. Enter the Solr Core Name
-
-        solr.core=collection1
-
-3. Enter the allowerd request handlers, seperated by commas:
+2. Enter the allowerd request handlers, seperated by commas:
 
         solr.allowed.request.handlers=/select,/update,/delete
         
-4. Enter the maximum number of allowed rows
+3. Enter the maximum number of allowed rows
         
         solr.allowed.rows.max=30
         
-5. If using the Solr Cloud mode, then configure the following:        
+4. If using the Solr Cloud mode, then configure the following:        
 
         solr.cloud.mode=true
            
-6. For HTTP Requests, configure the http connection timeout        
+5. For HTTP Requests, configure the http connection timeout        
 
         http.connection.timeout=1000
         
-7. For HTTP Requests, configure the http socket timeout
+6. For HTTP Requests, configure the http socket timeout
          
          http.socket.timeout=1000
 
-8. Enter the Available Server port, where you want to run this Solr Proxy
+7. Enter the Available Server port, where you want to run this Solr Proxy
 
         server.port=8899
 
@@ -64,12 +60,19 @@ Run Solr Proxy
     
     Now, you can send the HTTP requests to the Solr Proxy:
     
-        GET http://localhost:8899/solrproxy?corename=collection1&qt=/select&q=*    
+        GET http://localhost:8899/solrproxy?corename=collection1&qt=/select&q=*
+            
+    NOTE: In the request above, the proxy needs the corename in order to provide the results.     
 
 
-2. Or if you want to build this proxy application and run on some other application server, then use the following command:
+Build the Solr Proxy
+----------------------
+
+   By using the following command, the proxy application can be build into the Web application ARchive (WAR) :
 
          $ mvn clean package
+         
+   It will generate the target/proxy.war, that can be deployed on any Java Application Server.       
          
          
 For More Information
