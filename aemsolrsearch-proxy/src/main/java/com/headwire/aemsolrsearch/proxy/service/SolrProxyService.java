@@ -1,8 +1,3 @@
-/*
- * Author  : Gaston Gonzalez
- * Date    : 6/30/13
- * Version : $Id$
- */
 package com.headwire.aemsolrsearch.proxy.service;
 
 import org.apache.commons.lang.StringUtils;

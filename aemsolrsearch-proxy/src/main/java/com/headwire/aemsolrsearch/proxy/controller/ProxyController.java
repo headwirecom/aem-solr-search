@@ -1,8 +1,3 @@
-/*
- * Author  : Gaston Gonzalez
- * Date    : 8/12/13
- * Version : $Id$
- */
 package com.headwire.aemsolrsearch.proxy.controller;
 
 import org.apache.http.*;
