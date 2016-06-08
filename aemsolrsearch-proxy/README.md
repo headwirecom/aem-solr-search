@@ -23,9 +23,9 @@ Set up the following configurations inside resources/application.properties file
     
     For example in my case, it is 'http://localhost:8983/solr'
 
-2. Enter the allowerd request handlers, seperated by commas:
+2. Enter the allowed request handlers, seperated by commas:
 
-        solr.allowed.request.handlers=/select,/update,/delete
+        solr.allowed.request.handlers=/select
         
 3. Enter the maximum number of allowed rows
         
