@@ -12,7 +12,7 @@
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
+ See the License for the specific language governing permissions and 
  limitations under the License.
 -->
 
@@ -35,7 +35,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>4.9</luceneMatchVersion>
+  <luceneMatchVersion>6.3.0</luceneMatchVersion>
 
   <!-- <lib/> directives can be used to instruct Solr to load an Jars
        identified and use them to resolve any "plugins" specified in
@@ -328,13 +328,13 @@
          this is enabled here, and controlled through log4j.properties.
       -->
      <infoStream>true</infoStream>
-    
-    <!--
-        Use true to enable this safety check, which can help
-        reduce the risk of propagating index corruption from older segments 
-        into new ones, at the expense of slower merging.
-    -->
-     <checkIntegrityAtMerge>false</checkIntegrityAtMerge>
+
+
+
+
+
+
+
   </indexConfig>
 
 
@@ -1157,13 +1157,13 @@
                   class="solr.DocumentAnalysisRequestHandler" 
                   startup="lazy" />
 
-  <!-- Admin Handlers
 
-       Admin Handlers - This will register all the standard admin
-       RequestHandlers.  
-    -->
-  <requestHandler name="/admin/" 
-                  class="solr.admin.AdminHandlers" />
+
+
+
+
+
+
   <!-- This single handler is equivalent to the following... -->
   <!--
      <requestHandler name="/admin/luke"       class="solr.admin.LukeRequestHandler" />
