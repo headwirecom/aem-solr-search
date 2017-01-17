@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 
-<schema name="geometrixx-media-sample" version="1.5">
+<schema name="geometrixx-media-sample" version="1.6">
 
    <!-- If you remove this field, you must _also_ disable the update log in solrconfig.xml
       or Solr won't start. _version_ and update log are required for SolrCloud
