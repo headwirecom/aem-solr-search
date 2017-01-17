@@ -49,6 +49,11 @@
             <artifactId>squeakysand-jsp</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.squeakysand</groupId>
+            <artifactId>squeakysand-commons</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.squeakysand.osgi</groupId>
             <artifactId>squeakysand-osgi</artifactId>
         </dependency>

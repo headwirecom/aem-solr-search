@@ -27,7 +27,7 @@
 
     <properties>
         <jetty.port>8888</jetty.port>
-        <solr.version>4.10.4</solr.version>
+        <solr.version>6.3.0</solr.version>
         <solr.home>${project.build.directory}/aem-solr-home</solr.home>
     </properties>
 
