@@ -313,6 +313,9 @@ public class SolrConfigurationService {
      * Returns all Solr fields that have <code>indexed</code> set to <code>true</code>. This implementation uses
      * the <code>LukeRequestHandler</code>, as such this method will return dynamic fields as well.
      *
+     * 2017-01-16 Update: As of solr 6.2.1, the LukeRequest no longer returns the dynamic fields. This will be
+     * fixed in solr 6.4.
+     *
      * @param  solrCore Solr core name
      * @return a list of indexed fields on success, and an empty list otherwise.
      */
