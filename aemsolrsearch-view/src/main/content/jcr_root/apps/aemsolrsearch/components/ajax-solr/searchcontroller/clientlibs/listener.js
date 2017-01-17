@@ -38,8 +38,8 @@
 
         function addDataToFields(coreName) {
 
-            storedFields = getSearchResultOptions(event.selectedValue);
-            updateCoreRelatedFields()
+            storedFields = getSearchResultOptions(coreName);
+            updateCoreRelatedFields(storedFields)
 
         }
 
@@ -50,7 +50,7 @@
 
     });
 
-    function updateCoreRelatedFields() {
+    function updateCoreRelatedFields(storedFields) {
 
         updateHightlightFields(storedFields);
         updateResultFields(storedFields);
