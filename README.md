@@ -1,3 +1,5 @@
+aem solr search relies on a deprecated dependency (cqblueprints) - as such please consider migrating off aem-solr-search
+
 About AEM Solr Search
 =====================
 
