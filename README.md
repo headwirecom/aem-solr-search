@@ -35,17 +35,21 @@ These instructions assume that AEM is running on localhost on port 4502 with the
 
         $ mvn clean install -Pauto-deploy-all
         
-3. Deploy the Geometrixx Media sample bundles. 
+3. Deploy the Geometrixx Media sample bundles. This is intended as a reference implementation that you can use to model your customizations.
+   The first Maven profile deploys `aemsolrsearch-geometrixx-sample` which includes Sling Models for representing Geometrixx Media
+   Article pages as a Solr document model, event listeners for real-time indexing, and a sample indexing implementation. The second
+   profile deploys `aemsolrsearch-geometrixx-sample-content` that provides a small demo site and search page.
 
         $ mvn install -Pauto-deploy-geo
         $ mvn install -Pauto-deploy-sample
 
-4. Start Jetty. This will take sometime the first time, as Solr will be fetched from a Maven repository.
+4. Start Solr 4.10.1 using the quickstart distribution. This will take some time the first time, as Solr will be fetched from a Maven repository.
+   This will deploy a local instance of Jetty with Solr 4.10.1.
 
         $ cd aemsolrsearch-quickstart
         $ mvn clean resources:resources jetty:run
     
-5. In another terminal window run the index script.
+5. In another terminal window run the index script to perform a full index.
 
         $ cd ../aemsolrsearch-geometrixx-media-sample
         $ ./index-geometrixx-media-articles.sh
@@ -72,7 +76,7 @@ If you would like to try Solr 5 in SolrCloud mode, perform the following:
    `solr.mode` to _SolrCloud_ and set `solr.master` to one of the nodes in the cluster (i.e., `http://localhost:8983/solr`). 
    Currently, the proxy does not detect the set of active nodes in Zookeeper.
    
-4. Trigger a real-time index by creating a Geometrixx Media Article page or by running:
+4. Trigger a real-time index by creating a Geometrixx Media Article page or run a full index as follows:
 
         $ cd aemsolrsearch-geometrixx-media-sample
         $ ./index-geometrixx-media-articles-solrcloud.sh
